@@ -423,14 +423,20 @@ public class ReadingActivity extends AppCompatActivity {
             int stack = 0;
 
             void enumrateToc(TocEntry[] root) {
+                if(root==null){return;}
                 for (TocEntry toc : root) {
                     tocList.add((TocEntry) toc.clone());
                     String tabs = "";
                     for (int i = 0; i < stack; i++) {
                         tabs += "    ";
                     }
-                    tocList.get(tocList.size() - 1).label = tabs + tocList.get(tocList.size() - 1).label.trim();
-                    tocHashMap.put(toc.href, toc);
+                    String str = "";
+                    try{
+                        tocList.get(tocList.size() - 1).label = tabs + tocList.get(tocList.size() - 1).label.trim();
+                        tocHashMap.put(toc.href, toc);
+                    }catch (NullPointerException npe){
+                        Log.e("Unknown toc","",npe);
+                    }
                     stack++;
                     enumrateToc(toc.subitems);
                     stack--;
@@ -463,8 +469,6 @@ public class ReadingActivity extends AppCompatActivity {
         });
 
     }
-
-
     void displayPageInfo() {
         getSupportActionBar().setSubtitle("[" + currentPage + "] " + currentChapter);
     }

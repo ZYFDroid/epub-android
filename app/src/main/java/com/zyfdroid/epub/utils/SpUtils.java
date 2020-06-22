@@ -32,5 +32,10 @@ public class SpUtils{
         return sp.getBoolean("openWithExternalReader",false);
     }
 
+    public boolean firstRun(){
+        boolean firstRun = sp.getBoolean("firstRun",true);
+        sp.edit().putBoolean("firstRun",false);
+        return firstRun;
+    }
 
 }
