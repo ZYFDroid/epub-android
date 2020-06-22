@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tips">
+        <item>提示: 打开书籍会产生缓存，要定期清理缓存</item>
+        <item>提示: 在设置里可以改成用外部阅读器打开书籍</item>
+        <item>子曰：知之者不如好之者，好之者不如乐之者。</item>
+        <item>提示: 使用文件夹组织书籍。</item>
+        <item>提示: EPUB 是一种非常棒的电子书格式</item>
+        <item>提示: 电子书引擎是 github.com/futurepress/epub.js</item>
+        <item>提示: 使用音量键翻页</item>
+        <item>提示: 开源地址 github.com/ZYFDroid/epub-android</item>
+        <item>提示: 可以试试PC版阅读器</item>
+    </string-array>
+
+</resources>

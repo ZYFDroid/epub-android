@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/mnuFontSizes" android:title="@string/text_size"/>
+    <item android:id="@+id/mnuQuickLoad" android:title="@string/quick_load"/>
+    <item android:id="@+id/mnuQuickSave" android:title="@string/quick_save"/>
+    <item android:id="@+id/mnuReload" android:title="@string/reload"/>
+</menu>

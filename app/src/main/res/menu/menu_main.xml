@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/all">
+        <menu>
+            <item android:id="@+id/mnuAllBook" android:title="@string/all_books" android:icon="@drawable/ic_menu_folder"/>
+        </menu>
+    </item>
+    <item android:title="@string/folders" android:id="@+id/mnuFolders">
+    <menu>
+        <group android:checkableBehavior="single">
+
+        </group>
+    </menu>
+</item>
+    <item android:title="@string/preference">
+        <menu>
+            <item android:id="@+id/mnuSetting" android:title="@string/settings" android:icon="@drawable/ic_menu_setting"/>
+            <item android:id="@+id/mnuAbout" android:title="@string/about" android:icon="@drawable/ic_menu_about"/>
+        </menu>
+    </item>
+</menu>

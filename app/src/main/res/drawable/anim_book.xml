@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:oneshot="false">
+    <item android:drawable="@drawable/anim_book_1" android:duration="300"/>
+    <item android:drawable="@drawable/anim_book_2" android:duration="100"/>
+    <item android:drawable="@drawable/anim_book_3" android:duration="100"/>
+    <item android:drawable="@drawable/anim_book_4" android:duration="100"/>
+    <item android:drawable="@drawable/anim_book_5" android:duration="100"/>
+    <item android:drawable="@drawable/anim_book_6" android:duration="100"/>
+    <item android:drawable="@drawable/anim_book_7" android:duration="100"/>
+    <item android:drawable="@drawable/anim_book_8" android:duration="100"/>
+    <item android:drawable="@drawable/anim_book_9" android:duration="100"/>
+</animation-list>

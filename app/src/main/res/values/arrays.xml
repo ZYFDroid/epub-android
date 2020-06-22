@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tips">
+        <item>Tips: Cache will be generated when opening the book. It is necessary to clean cache regularly.</item>
+        <item>Tips: Tired of the build-in reader? Try out other reader apps. You can change the open-with option in settings.</item>
+        <item>Books are the ladder of human progress. ————Gorky</item>
+        <item>Tips: Use folders to organize your books.</item>
+        <item>Tips: EPUB is a registered trademark of the IDPF</item>
+        <item>Tips: Powered by github.com/futurepress/epub.js</item>
+        <item>Tips: Turn pages with volume key</item>
+        <item>Tips: Visit sourcecode at github.com/ZYFDroid/epub-android</item>
+        <item>Tips: Try out the EPUBCSharp on pc.</item>
+    </string-array>
+
+</resources>

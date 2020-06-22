@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_clock"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="match_parent"
+    android:background="#000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:id="@+id/clockBackground"
+        android:background="#000">
+
+
+        <ImageView
+            android:id="@+id/imgAnim"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:background="@drawable/progress_border"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp">
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:progress="20"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/bg_progress"
+                android:id="@+id/progressTime" />
+        </FrameLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ddd"
+            android:textSize="16sp"
+            tools:text="Loading..."
+            android:lines="1"
+            android:id="@+id/txtProgressMessage"/>
+
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="10sp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        tools:text="Tips: Tired of the build-in Reader? You can open books with external reader apps. Try out in setting."
+        android:id="@+id/txtProgressHint"/>
+
+</FrameLayout>
