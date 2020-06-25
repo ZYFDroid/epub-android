@@ -1,0 +1,10 @@
+WHY ROBOTO.TTF
+-------------------------------------------
+No matter what font is used.
+The font is a fallback font to speed up the page loading. The book will try to load font and alternative fonts (and then it will be blocked by CORS or it does not exists at all.). The roboto.ttf is provided when the book try to load fonts that does not exists, Then it will stop loading the other fallback fonts.
+
+为什么会有个ROBOTO.TTF
+-------------------------------------------
+其实用什么字体都可以
+这玩意是一个默认字体，用来加速书的加载，因为有的书在css里弄了一大堆字体和替代字体，然后一打开就开始加载（然后被CORS阻止（并且压根不存在）），加载大量字体导致书页加载缓慢
+一旦页面尝试加载不存在的字体，统统返回roboto，这样就不会加载后续的替代字体了，因此提高加载速度（手机上最明显）
