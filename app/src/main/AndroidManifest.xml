@@ -16,10 +16,12 @@
         android:theme="@style/AppTheme">
         <activity android:name=".AboutActivity"
             android:label="@string/about"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.DefaultActionBar"/>
         <activity
             android:name=".SettingActivity"
             android:label="@string/settings"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.DefaultActionBar" />
         <activity
             android:name=".SplashActivity"
@@ -33,6 +35,7 @@
         </activity>
         <activity
             android:name=".BookshelfActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ReadingActivity"

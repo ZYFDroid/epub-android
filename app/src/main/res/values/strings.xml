@@ -45,4 +45,5 @@
     <string name="save_empty">Empty</string>
     <string name="about">About</string>
     <string name="about_file_name">about</string>
+    <string name="bookshelf_search">Search Book</string>
 </resources>

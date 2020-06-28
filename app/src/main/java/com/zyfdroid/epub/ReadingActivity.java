@@ -49,6 +49,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,6 +76,21 @@ public class ReadingActivity extends AppCompatActivity {
 
     BookmarkAdapter bookmarkAdapter;
 
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                try {
+                    Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    method.setAccessible(true);
+                    method.invoke(menu, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -467,7 +483,19 @@ public class ReadingActivity extends AppCompatActivity {
                 displayPageInfo();
             }
         });
+        htmlCallbacks.put("SHOW_PROGRESS", new Action<String>() {
+            @Override
+            public void run(String arg) {
+                findViewById(R.id.pbrLoading).setVisibility(arg.equals("1") ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
 
+        htmlCallbacks.put("AUTO_SAVE_REQUIRE", new Action<String>() {
+            @Override
+            public void run(String arg) {
+                DBUtils.autoSave(readingBook.getUUID(), arg, currentChapter + "\n" + currentPage);
+            }
+        });
     }
     void displayPageInfo() {
         getSupportActionBar().setSubtitle("[" + currentPage + "] " + currentChapter);
@@ -514,7 +542,7 @@ public class ReadingActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     TocEntry toc = (TocEntry) view.getTag();
-                    evaluteJavascriptFunction("renderH.display", toc.href);
+                    evaluteJavascriptFunction("navTo", toc.href);
                     closeDrawer();
                 }
             });
@@ -595,7 +623,7 @@ public class ReadingActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     DBUtils.BookMark bm = (DBUtils.BookMark) view.getTag();
                     if (!bm.getEpubcft().isEmpty()) {
-                        evaluteJavascriptFunction("renderH.display", bm.getEpubcft());
+                        evaluteJavascriptFunction("navTo", bm.getEpubcft());
                         closeDrawer();
                         snack(getString(R.string.loaded));
                     }
@@ -642,7 +670,7 @@ public class ReadingActivity extends AppCompatActivity {
 
     public void navTo(String cfi){
         if(!cfi.isEmpty()){
-            evaluteJavascriptFunction("renderH.display", cfi);
+            evaluteJavascriptFunction("navTo", cfi);
         }
     }
 

@@ -4,20 +4,26 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +44,7 @@ import com.zyfdroid.epub.utils.SpUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -111,7 +118,30 @@ public class BookshelfActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-            menu.add(R.string.bookshelf_scan_for_books).setIcon(R.drawable.ic_menu_rescan).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            SearchView actionView = new SearchView(new ContextThemeWrapper(this,R.style.Theme_AppCompat));
+            actionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    doSearching(s);
+                    return false;
+                }
+            });
+
+            actionView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    loadData();
+                    return false;
+                }
+            });
+
+            menu.add(R.string.bookshelf_search).setIcon(R.drawable.ic_menu_searchinlibrary).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setActionView(actionView);
+            menu.add(R.string.bookshelf_scan_for_books).setIcon(R.drawable.ic_menu_rescan).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     doRescan();
@@ -121,8 +151,21 @@ public class BookshelfActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     public void doRescan(){
         scanDefaultPath();
+    }
+
+    public void doSearching(String text){
+        if(isAllBook){
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("type=0 and display_name like ? order by display_name","%"+text+"%");
+            loadBooksList(lsResult);
+        }
+        else{
+
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 and display_name like ? order by display_name",currentDirectory.getUUID(),"%"+text+"%");
+            loadBooksList(lsResult);
+        }
     }
 
     public void scanDefaultPath(){
@@ -157,6 +200,7 @@ public class BookshelfActivity extends AppCompatActivity {
     }
 
     boolean isAllBook = false;
+    DBUtils.BookEntry currentDirectory = null;
 
     public void loadBooksList(List<DBUtils.BookEntry> books){
         RecyclerView rv = (RecyclerView) findViewById(R.id.listBooks);
@@ -201,7 +245,7 @@ public class BookshelfActivity extends AppCompatActivity {
             List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 order by display_name",folder.getUUID());
             setTitle(folder.getDisplayName());
             loadBooksList(lsResult);
-            isAllBook = false;
+            isAllBook = false;currentDirectory = folder;
             return false;
         }
     }

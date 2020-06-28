@@ -24,6 +24,7 @@
     </android.support.design.widget.AppBarLayout>
 
 
+
     <android.support.v4.widget.DrawerLayout
         android:layout_width="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
@@ -76,5 +77,13 @@
         </LinearLayout>
 
     </android.support.v4.widget.DrawerLayout>
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:id="@+id/pbrLoading"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:indeterminate="true"
+        style="?android:attr/progressBarStyleHorizontal"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\user\AppData\Local\Temp\baseline_send_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\ZYFDroid\AppData\Local\Temp\baseline_input_24.xml" />
                                                 <entry key="opacityPercent" value="80" />
                                               </map>
                                             </option>
@@ -36,7 +36,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Programs/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/send/baseline_send_24.xml" />
+                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/studio4.0/plugins/android/lib/android.jar!/images/material/icons/materialicons/input/baseline_input_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -68,7 +68,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_list_go" />
+                                      <entry key="outputName" value="ic_menu_load" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="000000" />
                                     </map>
@@ -87,7 +87,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="ffffff" />
-                                                <entry key="imagePath" value="C:\Users\user\AppData\Local\Temp\baseline_import_contacts_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\ZYFDroid\AppData\Local\Temp\baseline_hdr_strong_24.xml" />
                                                 <entry key="scalingPercent" value="68" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
@@ -100,7 +100,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Programs/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/import_contacts/baseline_import_contacts_24.xml" />
+                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/studio4.0/plugins/android/lib/android.jar!/images/material/icons/materialicons/hdr_strong/baseline_hdr_strong_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -161,7 +161,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\user\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\ZYFDroid\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -205,7 +205,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\user\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\ZYFDroid\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -269,7 +269,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="imagePath" value="C:\Users\user\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\ZYFDroid\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>

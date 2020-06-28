@@ -95,15 +95,21 @@
     };
 
     function loadBookAtUrl(url, startlocation,fontsize) {
+
+        reportMessage("SHOW_PROGRESS", "1");
 	    rootView = document.getElementById("epubsub");
         book = ePub("../book/" + url);
         renderH = book.renderTo("epubsub",{ method: "continuous" });
         renderH.themes.fontSize(fontsize);
         renderH.display().then(() => { reportMessage("EPUB_BOOK_INIT_SUCCESS");
+        reportMessage("SHOW_PROGRESS", "0");
                 reportLocationAsync(); });
         renderH.on("click",function(event){
 				try {
-					if (event.target.tagName.toLowerCase() == "a" && event.target.href) return;
+					if (event.target.tagName.toLowerCase() == "a" && event.target.href) {
+					    reportMessage("AUTO_SAVE_REQUIRE",renderH.location.start.cfi);
+					    return;
+					}
 					if (event.target.parentNode.tagName.toLowerCase() == "a" && event.target.parentNode.href) return;
 					if (window.getSelection().toString().length !== 0) return;
 					if (renderH.manager.getContents()[0].window.getSelection().toString().length !== 0) return;
@@ -151,7 +157,7 @@
 
         );
         if (startlocation.length && startlocation.length > 0) {
-            renderH.display(startlocation);
+            navTo(startlocation);
         }
     }
 
@@ -196,14 +202,28 @@
             }
         }
     }
+
     function prev() {
+        reportMessage("SHOW_PROGRESS", "1");
         reportLocationAsync();
-        return renderH.prev();
+        renderH.prev().then(() => {
+            reportMessage("SHOW_PROGRESS", "0");
+        });
+    }
+
+    function navTo(pos){
+        reportMessage("SHOW_PROGRESS", "1");
+        renderH.display(pos).then(() => {
+            reportMessage("SHOW_PROGRESS", "0");
+        });
     }
 
     function next() {
+        reportMessage("SHOW_PROGRESS", "1");
         reportLocationAsync();
-        return renderH.next();
+        renderH.next().then(() => {
+            reportMessage("SHOW_PROGRESS", "0");
+        });
     }
 
 </script>
