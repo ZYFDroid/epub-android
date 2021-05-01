@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EPUBium.iml" filepath="$PROJECT_DIR$/EPUBium.iml" group="EPUBium" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="EPUBium/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/epub-android.iml" filepath="$PROJECT_DIR$/.idea/modules/epub-android.iml" group="epub-android" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android-app.iml" group="epub-android/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/epub-android.iml" filepath="$PROJECT_DIR$/.idea/modules/epub-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app.iml" />
     </modules>
   </component>
 </project>

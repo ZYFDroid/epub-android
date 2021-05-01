@@ -7,14 +7,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.squareup.picasso.Picasso;
-import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.SpUtils;
 
 import java.io.File;

@@ -14,18 +14,16 @@ public class SpUtils{
         return new SpUtils(ctx);
     }
 
-    @SuppressLint("ApplySharedPref")
     public void setTextSize(int ts){
-        sp.edit().putInt("readingFontSize",ts).commit();
+        sp.edit().putInt("readingFontSize",ts).apply();
     }
 
     public int getTextSize(){
         return sp.getInt("readingFontSize",15);
     }
 
-    @SuppressLint("ApplySharedPref")
     public void setOpenWithExternalReader(boolean b){
-        sp.edit().putBoolean("openWithExternalReader",b).commit();
+        sp.edit().putBoolean("openWithExternalReader",b).apply();
     }
 
     public boolean shouldOpenWithExternalReader(){
@@ -34,7 +32,7 @@ public class SpUtils{
 
     public boolean firstRun(){
         boolean firstRun = sp.getBoolean("firstRun",true);
-        sp.edit().putBoolean("firstRun",false);
+        sp.edit().putBoolean("firstRun",false).apply();
         return firstRun;
     }
 

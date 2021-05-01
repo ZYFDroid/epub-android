@@ -9,6 +9,7 @@ buildscript {
             name 'Google'
         }
         mavenCentral()
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.0'
@@ -22,9 +23,10 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url 'https://maven.google.com/'
+            url 'https://maven.aliyun.com/repository/google'
             name 'Google'
         }
+        google()
     }
 }
 
