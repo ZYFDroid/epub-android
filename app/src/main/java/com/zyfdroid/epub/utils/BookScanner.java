@@ -115,17 +115,17 @@ public class BookScanner {
             @Override
             protected String doInBackground(String... params) {
                 try {
-                    pdd.setProgress(0,4);
+                    pdd.setProgress(0,100);
                     publishProgress(ctx.getString(R.string.scan_rescure_dictionary));
                     delay(300);
                     rescurePath(params[0]);
                     publishProgress(String.format(ctx.getString(R.string.scan_found), bookPath.size(), path.size()));
 
-                    pdd.setProgress(1,4);
+                    pdd.setProgress(100,100);
                     delay(300);
                     publishProgress(ctx.getString(R.string.scan_reading_database));
 
-                    pdd.setProgress(2,4);
+                    pdd.setProgress(0,100);
 
                     if(fullscan){
                         DBUtils.execSql("delete from library");
@@ -289,8 +289,6 @@ public class BookScanner {
             protected void onPostExecute(String s) {
                 pdd.dismiss();
                 if(null!=finishListener){finishListener.onFinish();}
-//                new AlertDialog.Builder(ctx).setTitle("扫描完成").setMessage(s)
-//                        .setPositiveButton("好", null).create().show();
             }
         }.execute(root);
 

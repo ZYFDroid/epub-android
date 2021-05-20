@@ -4,7 +4,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:background="#fff"
+    android:background="@color/whitebg"
     android:padding="0dp">
 
     <TextView
@@ -13,14 +13,14 @@
         android:id="@+id/txtListItem"
         android:layout_margin="10dp"
         android:layout_weight="1"
-        android:textColor="#000"
+        android:textColor="@color/textdaylight"
         tools:text="TestItem1"/>
     <ImageButton
         android:layout_width="wrap_content"
         android:background="@drawable/bg_ripple"
         android:src="@drawable/ic_list_go"
         android:minWidth="40dp"
-        android:tint="#000"
+        android:tint="@color/textdaylight"
         android:id="@+id/btnGo"
         android:layout_height="match_parent"/>
 </LinearLayout>

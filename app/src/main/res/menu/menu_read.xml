@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/mnuFontSizes" android:title="@string/text_size" android:icon="@drawable/ic_menu_textsize"/>
-    <item android:id="@+id/mnuQuickSave" android:title="@string/quick_save" android:icon="@drawable/ic_menu_save"/>
-    <item android:id="@+id/mnuQuickLoad" android:title="@string/quick_load" android:icon="@drawable/ic_menu_load"/>
-    <item android:id="@+id/mnuReload" android:title="@string/reload" android:icon="@drawable/ic_menu_reload"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/mnuTempBookmark" android:title="@string/tempbookmark" android:iconTintMode="src_in" android:icon="@drawable/ic_menu_bookmark_unlock" app:showAsAction="always" android:iconTint="#fff"/>
+    <item android:id="@+id/mnuFontSizes" android:title="@string/text_size" android:icon="@drawable/ic_menu_textsize" />
+    <item android:id="@+id/mnuQuickSave" android:title="@string/quick_save" android:icon="@drawable/ic_menu_save" />
+    <item android:id="@+id/mnuQuickLoad" android:title="@string/quick_load" android:icon="@drawable/ic_menu_load" />
+    <item android:id="@+id/mnuReload" android:title="@string/reload" android:icon="@drawable/ic_menu_reload" />
 </menu>

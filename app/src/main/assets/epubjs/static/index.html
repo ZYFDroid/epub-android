@@ -17,6 +17,7 @@
         body,
         html {
             height: 100%;
+            background-color: transparent;
         }
 
 
@@ -24,6 +25,7 @@
             height: 100%;
             display: flex;
         }
+
 
     </style>
 </head>
@@ -94,6 +96,7 @@
         )[0] || null;
     };
 
+
     function loadBookAtUrl(url, startlocation,fontsize) {
 
         reportMessage("SHOW_PROGRESS", "1");
@@ -151,7 +154,6 @@
 
         renderH.hooks.content.register(
              function(){
-
                 renderH.getContents().forEach(c => adjustTheFxxkingImage(c));
              }
 
@@ -163,6 +165,11 @@
 
     function setTextSize(ts){
         renderH.themes.fontSize(ts);
+    }
+
+    var nightmode = false;
+    function setNight(){
+        nightmode=true;
     }
 
     // 感谢17soft老板提供的离线dev调试工具
@@ -179,7 +186,25 @@
                         "img": {
                             "max-width": "100% !important"
                         },
+                        "body": {
+                            "background-color": "transparent"
+                        }
                     };
+
+        if(nightmode){
+            rules = {
+                        "img": {
+                            "max-width": "100% !important"
+                        },
+                        "body": {
+                            "background-color": "transparent"
+                        },
+                        "*": {
+                            "color": nightmode ? "white" : "black"
+                        }
+                    };
+        }
+
         mainDoc.addStylesheetRules(rules);
         //标准100%
         var maxWidth = document.getElementById("epubsub").clientWidth;

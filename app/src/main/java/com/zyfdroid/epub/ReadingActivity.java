@@ -4,12 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -88,7 +92,15 @@ public class ReadingActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem mi = menu.getItem(i);
+                if(mi.getItemId()!=R.id.mnuTempBookmark) {
+                    ColorStateList color = (ColorStateList.valueOf(getResources().getColor(R.color.textdaylight)));
+                    MenuItemCompat.setIconTintList(mi, color);
+                }
+            }
         }
+
         return super.onMenuOpened(featureId, menu);
     }
     @Override
@@ -107,6 +119,13 @@ public class ReadingActivity extends AppCompatActivity {
         bookRootPath = new File(EpubUtils.cacheBookPath, readingBook.getUUID()).getAbsolutePath();
         drawerTab = findViewById(R.id.tabMain);
         bookView = findViewById(R.id.webEpub);
+
+        if(getString(R.string.isnightmode).contains("yes")){
+            if(SpUtils.getInstance(ReadingActivity.this).getAllowNightMode()){
+                bookView.setBackgroundColor(0);
+            }
+        }
+
         bookmarkAdapter = new BookmarkAdapter();
         ((RecyclerView) findViewById(R.id.listBookmarks)).setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         ((RecyclerView) findViewById(R.id.listBookmarks)).setAdapter(bookmarkAdapter);
@@ -143,6 +162,8 @@ public class ReadingActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_read,menu);
+        ColorStateList color =(ColorStateList.valueOf(Color.WHITE));
+        MenuItemCompat.setIconTintList(menu.findItem(R.id.mnuTempBookmark),color);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -193,13 +214,18 @@ public class ReadingActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.mnuReload:
-                bookView.setPadding(10,10,10,10);
-                hWnd.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        bookView.setPadding(0,0,0,0);
-                    }
-                },300);
+                setFontSize(SpUtils.getInstance(this).getTextSize());
+                break;
+            case R.id.mnuTempBookmark:
+                if(tempBookmark==null){
+                    tempBookmark = currentProgressCfi;
+                    item.setIcon(R.drawable.ic_menu_bookmark_lock);
+                }
+                else{
+                    evaluteJavascriptFunction("navTo", tempBookmark);
+                    tempBookmark = null;
+                    item.setIcon(R.drawable.ic_menu_bookmark_unlock);
+                }
                 break;
             default:
                 Log.w("Unknown menu clicked: ","id="+item.getItemId());
@@ -208,6 +234,8 @@ public class ReadingActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private String tempBookmark = null;
 
     public void setFontSize(int fontSize){
         Log.w(TAG, "setTextSize: "+fontSize);
@@ -221,6 +249,7 @@ public class ReadingActivity extends AppCompatActivity {
             }
         },500);
     }
+
 
     @Override
     protected void onDestroy() {
@@ -256,7 +285,7 @@ public class ReadingActivity extends AppCompatActivity {
         ws.setAllowUniversalAccessFromFileURLs(true);
         ws.setAppCacheEnabled(true);
         ws.setDatabaseEnabled(true);
-        ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        ws.setCacheMode(WebSettings.LOAD_NO_CACHE);
         ws.setJavaScriptEnabled(true);
         ws.setUseWideViewPort(true);
         ws.setLoadWithOverviewMode(true);
@@ -285,7 +314,6 @@ public class ReadingActivity extends AppCompatActivity {
                     return true;
                 }
             }
-
 
             @Nullable
             @Override
@@ -416,6 +444,11 @@ public class ReadingActivity extends AppCompatActivity {
         htmlCallbacks.put("EPUB_BOOK_INIT_START", new Action<String>() {
             @Override
             public void run(String arg) {
+                if(getString(R.string.isnightmode).contains("yes")){
+                    if(SpUtils.getInstance(ReadingActivity.this).getAllowNightMode()){
+                        evaluteJavascriptFunction("setNight()");
+                    }
+                }
                 evaluteJavascriptFunction("loadBookAtUrl", contentOpfPath, DBUtils.autoLoad(ReadingActivity.this,readingBook.getUUID()).getEpubcft(),SpUtils.getInstance(ReadingActivity.this).getTextSize());
             }
         });
@@ -654,11 +687,13 @@ public class ReadingActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("WrongConstant")
     private void closeDrawer() {
         DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         drwMain.closeDrawer(Gravity.START);
     }
 
+    @SuppressLint("WrongConstant")
     private boolean isDrawerOpen() {
         DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         return drwMain.isDrawerOpen(Gravity.START);

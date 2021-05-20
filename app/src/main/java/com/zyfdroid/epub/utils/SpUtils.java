@@ -22,6 +22,12 @@ public class SpUtils{
         return sp.getInt("readingFontSize",15);
     }
 
+    public boolean getAllowNightMode(){
+        return sp.getBoolean("nightmode",true);
+    }
+    public void setAllowNightMode(boolean value){
+        sp.edit().putBoolean("nightmode",value).apply();
+    }
     public void setOpenWithExternalReader(boolean b){
         sp.edit().putBoolean("openWithExternalReader",b).apply();
     }

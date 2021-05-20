@@ -46,4 +46,8 @@
     <string name="about">About</string>
     <string name="about_file_name">about</string>
     <string name="bookshelf_search">Search Book</string>
+    <string name="daylight">DayNight</string>
+    <string name="tempbookmark">Temporary Bookmark</string>
+    <string name="isnightmode" translatable="false">no</string>
+    <string name="allownight">Turn page background into black when night</string>
 </resources>

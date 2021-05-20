@@ -9,7 +9,7 @@
     android:elevation="3dp"
     android:layout_height="match_parent"
     android:layout_margin="7dp"
-    app:cardBackgroundColor="#fff"
+    app:cardBackgroundColor="@color/book_card_bg"
     app:cardElevation="3dp"
     android:id="@+id/crdBook"
     app:contentPadding="2dp"
@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:background="#fff"
+        android:background="@color/book_card_bg"
         android:layout_height="match_parent">
 
         <ImageView

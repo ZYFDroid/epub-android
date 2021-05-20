@@ -3,4 +3,8 @@
     <color name="colorPrimary">#0055f7</color>
     <color name="colorPrimaryDark">#0044ee</color>
     <color name="colorAccent">#ff55f7</color>
+    <color name="book_card_bg">#fff</color>
+    <color name="textdaylight">#000</color>
+
+    <color name="whitebg">#fff</color>
 </resources>

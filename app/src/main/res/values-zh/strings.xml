@@ -45,4 +45,9 @@
     <string name="save_empty">无存档</string>
     <string name="about">关于</string>
     <string name="about_file_name">about_zh</string>
+    <string name="daylight">日夜切换</string>
+    <string name="tempbookmark">临时书签</string>
+
+    <string name="bookshelf_search">Search Book</string>
+    <string name="allownight">夜间模式时页面黑色背景</string>
 </resources>

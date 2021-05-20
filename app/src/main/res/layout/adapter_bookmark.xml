@@ -11,7 +11,7 @@
         android:layout_margin="4dp"
         android:padding="2dp"
         app:cardCornerRadius="5dp"
-        app:cardBackgroundColor="#fff"
+        app:cardBackgroundColor="@color/book_card_bg"
         app:cardElevation="4dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtBookmarkTime"
                 android:background="@drawable/bookmark"
+                android:backgroundTint="@color/colorAccent"
                 android:paddingRight="10dp"
                 android:paddingLeft="2dp"
                 android:layout_marginTop="4dp"
@@ -47,7 +48,7 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="5dp"
-                    android:textColor="#000"
+                    android:textColor="@color/textdaylight"
                     android:id="@+id/txtBookmarkTitle"
                     tools:text="Auto save"
                     android:textStyle="bold"
@@ -65,7 +66,7 @@
                         android:id="@+id/btnBookmarkSave"
                         android:background="@drawable/bg_ripple"
                         android:text="@string/save"
-                        android:textColor="@color/colorPrimaryDark"/>
+                        android:textColor="@color/colorAccent"/>
 
                     <Button
                         android:layout_width="wrap_content"
@@ -74,7 +75,7 @@
                         android:background="@drawable/bg_ripple"
                         android:text="@string/load"
                         android:id="@+id/btnBookmarkLoad"
-                        android:textColor="@color/colorPrimaryDark"/>
+                        android:textColor="@color/colorAccent"/>
                 </LinearLayout>
 
             </LinearLayout>

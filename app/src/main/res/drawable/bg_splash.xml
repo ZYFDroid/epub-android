@@ -3,7 +3,7 @@
 
    <item>
        <shape android:shape="rectangle"
-           android:layout_height="match_parent"><solid android:color="#fff"/> </shape>
+           android:layout_height="match_parent"><solid android:color="@color/book_card_bg"/> </shape>
    </item>
 
     <item android:gravity="center" android:width="100dp" android:height="100dp" android:drawable="@mipmap/ic_launcher">

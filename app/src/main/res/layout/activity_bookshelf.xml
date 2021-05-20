@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:foregroundTint="#fff"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -27,7 +28,6 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/drwMain"
         android:layout_height="match_parent">
-
         <include layout="@layout/activity_bookshelf_main"/>
 
         <com.google.android.material.navigation.NavigationView

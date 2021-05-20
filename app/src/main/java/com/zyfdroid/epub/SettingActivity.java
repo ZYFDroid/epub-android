@@ -16,17 +16,25 @@ import com.zyfdroid.epub.utils.SpUtils;
 public class SettingActivity extends AppCompatActivity {
 
     CheckBox chkOpenExternal;
-
+    CheckBox chkAllowNight;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         chkOpenExternal = findViewById(R.id.chkExternalOpen);
         chkOpenExternal.setChecked(SpUtils.getInstance(this).shouldOpenWithExternalReader());
+        chkAllowNight = findViewById(R.id.chkAllowNight);
+        chkAllowNight.setChecked(SpUtils.getInstance(this).getAllowNightMode());
         chkOpenExternal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.getInstance(SettingActivity.this).setOpenWithExternalReader(isChecked);
+            }
+        });
+        chkAllowNight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.getInstance(SettingActivity.this).setAllowNightMode(isChecked);
             }
         });
     }
