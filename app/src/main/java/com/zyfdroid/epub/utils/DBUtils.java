@@ -99,7 +99,7 @@ public class DBUtils extends SQLiteOpenHelper {
     }
 
     public static List<BookEntry> queryBooks(String sql,String... args){
-        Cursor c = rawQuery("select id,uuid,type,parent_uuid,display_name,path,lastopen from library where "+sql,args);
+        Cursor c = rawQuery("select id,uuid,type,parent_uuid,display_name,path,lastopen from library where "+sql+"",args);
         ArrayList<BookEntry> books  = new ArrayList<>();
         if(c.moveToFirst()){
             do{
@@ -111,7 +111,7 @@ public class DBUtils extends SQLiteOpenHelper {
     }
 
     public static List<BookEntry> queryFoldersNotEmpty(){
-        Cursor c = rawQuery("select id,uuid,type,parent_uuid,display_name,path,lastopen from library as lib where 0 < (select count(*) from library where parent_uuid=lib.uuid and type=0) order by display_name");
+        Cursor c = rawQuery("select id,uuid,type,parent_uuid,display_name,path,lastopen from library as lib where 0 < (select count(*) from library where parent_uuid=lib.uuid and type=0)  order by display_name");
         ArrayList<BookEntry> books  = new ArrayList<>();
         if(c.moveToFirst()){
             do{

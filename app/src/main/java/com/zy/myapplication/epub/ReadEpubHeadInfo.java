@@ -43,6 +43,9 @@ public class ReadEpubHeadInfo {
 
     public void setSaveInfoPath(String saveInfoPath) {
         SAVE_INFO_PATH = saveInfoPath;
+        SAVE_IMAGE_PATH = new File(saveInfoPath,"cover").getAbsolutePath();
+        new File(SAVE_IMAGE_PATH).mkdirs();
+        new File(SAVE_INFO_PATH).mkdirs();
     }
 
     public ReadEpubHeadInfo() {

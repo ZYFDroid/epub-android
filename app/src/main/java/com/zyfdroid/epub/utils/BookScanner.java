@@ -189,6 +189,7 @@ public class BookScanner {
                             TempBookInfo readinfo = readBookInfo(bf);
                             String path2uuid = pathToUUID.get(parentPath);
                             DBUtils.BookEntry tmpEntry = DBUtils.BookEntry.createBook(path2uuid != null ? path2uuid : DBUtils.BookEntry.ROOT_UUID, readinfo.title, bf.getAbsolutePath());
+                            tmpEntry.lastOpenTime = bf.lastModified();
                             String coverPathName = EpubUtils.cacheImagePath + "/" + tmpEntry.getUUID() + ".jpg";
                             File coverFile = new File(coverPathName);
                             if(coverFile.exists()){coverFile.delete();}

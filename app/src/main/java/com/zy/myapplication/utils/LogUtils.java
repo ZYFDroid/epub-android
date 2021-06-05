@@ -5,45 +5,74 @@ import android.util.Log;
 public class LogUtils {
 
 	private static final boolean isLog = true;
-
+	public static boolean stdout = false;
 	public static void d(String tag, String msg) {
 		if (!isLog) {
+			if(stdout){
+				System.out.println("[D: "+tag+"] "+msg);
+				return;
+			}
 			Log.d(tag, msg);
 		}
 	}
 
 	public static void e(String tag, String msg) {
 		if (isLog) {
+			if(stdout) {
+				System.out.println("[E: " + tag + "] " + msg);
+				return;
+			}
 			Log.e(tag, msg);
 		}
 	}
 
 	public static void e(String tag, String string, Exception e) {
 		if (isLog) {
+			if(stdout) {
+				System.out.println("[E: " + tag + "] " + string);
+				e.printStackTrace(System.out);
+				return;
+			}
 			Log.e(tag, string, e);
 		}
 	}
 
 	public static void i(String tag, String msg) {
 		if (isLog) {
+			if(stdout) {
+				System.out.println("[I: " + tag + "] " + msg);
+				return;
+			}
 			Log.i(tag, msg);
 		}
 	}
 
 	public static void v(String tag, String msg) {
 		if (isLog) {
+			if(stdout) {
+				System.out.println("[V: " + tag + "] " + msg);
+				return;
+			}
 			Log.v(tag, msg);
 		}
 	}
 
 	public static void w(String tag, String msg) {
 		if (isLog) {
+			if(stdout) {
+				System.out.println("[W: " + tag + "] " + msg);
+				return;
+			}
 			Log.w(tag, msg);
 		}
 	}
 
 	public static void wtf(String tag, String msg) {
 		if (isLog) {
+			if(stdout) {
+				System.err.println("[F: " + tag + "] " + msg);
+				return;
+			}
 			Log.wtf(tag, msg);
 		}
 	}

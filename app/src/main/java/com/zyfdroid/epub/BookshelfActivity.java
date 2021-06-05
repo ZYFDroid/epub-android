@@ -152,12 +152,12 @@ public class BookshelfActivity extends AppCompatActivity {
 
     public void doSearching(String text){
         if(isAllBook){
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("type=0 and display_name like ? order by display_name","%"+text+"%");
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("type=0 and display_name like ?  order by lastopen desc","%"+text+"%");
             loadBooksList(lsResult);
         }
         else{
 
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 and display_name like ? order by display_name",currentDirectory.getUUID(),"%"+text+"%");
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 and display_name like ?  order by lastopen desc",currentDirectory.getUUID(),"%"+text+"%");
             loadBooksList(lsResult);
         }
     }
@@ -236,7 +236,7 @@ public class BookshelfActivity extends AppCompatActivity {
             if(drwMain.isDrawerOpen(GravityCompat.START)){
                 drwMain.closeDrawer(GravityCompat.START);
             }
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 order by display_name",folder.getUUID());
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 order by lastopen desc",folder.getUUID());
             setTitle(folder.getDisplayName());
             loadBooksList(lsResult);
             isAllBook = false;currentDirectory = folder;
