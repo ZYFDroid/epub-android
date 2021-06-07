@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zyfdroid.epub"
-    >
-
+    package="com.zyfdroid.epub">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
         android:name=".Program"
         android:allowBackup="true"
@@ -13,13 +12,24 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
-
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AboutActivity"
-            android:label="@string/about"
+        <service
+            android:name=".server.ServerService"
+            android:enabled="true"
+            android:label="@string/server"
+            android:exported="true" />
+
+        <activity android:name=".server.ServerActivity"
+            android:label="@string/server"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.DefaultActionBar"/>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/about"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.DefaultActionBar" />
         <activity
             android:name=".SettingActivity"
             android:label="@string/settings"
@@ -37,8 +47,8 @@
         </activity>
         <activity
             android:name=".BookshelfActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ReadingActivity"
             android:screenOrientation="portrait" />

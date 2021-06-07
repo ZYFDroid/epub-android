@@ -71,6 +71,7 @@ public class ReadingActivity extends AppCompatActivity {
     WebView bookView;
     String internalUrlStatic = "http://epub.zyfdroid.com/static";
     String internalUrlBook = "http://epub.zyfdroid.com/book";
+    String dummyScriptUrl = "http://epub.zyfdroid.com/api/reportmode.js";
     String homeUrl = "http://epub.zyfdroid.com/static/index.html";
 
     TabLayout drawerTab;
@@ -372,6 +373,9 @@ public class ReadingActivity extends AppCompatActivity {
                     if (url.startsWith(internalUrlBook)) {
                         String path = url.substring(internalUrlBook.length());
                         return processBookResource(path);
+                    }
+                    if(url.startsWith(dummyScriptUrl)){
+                        return new WebResourceResponse("text/javascript", "UTF-8", 200, "OK", null, new ByteArrayInputStream(new byte[0]));
                     }
                 } catch (Exception ex) {
                 }

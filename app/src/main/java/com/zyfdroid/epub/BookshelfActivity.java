@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.picasso.Downloader;
 import com.squareup.picasso.Picasso;
+import com.zyfdroid.epub.server.ServerActivity;
 import com.zyfdroid.epub.utils.BookScanner;
 import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.EpubUtils;
@@ -92,6 +93,17 @@ public class BookshelfActivity extends AppCompatActivity {
                     drwMain.closeDrawer(GravityCompat.START);
                 }
                 startActivity(new Intent(BookshelfActivity.this,AboutActivity.class));
+                return true;
+            }
+        });
+        navMain.getMenu().findItem(R.id.mnuServer).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+                if(drwMain.isDrawerOpen(GravityCompat.START)){
+                    drwMain.closeDrawer(GravityCompat.START);
+                }
+                startActivity(new Intent(BookshelfActivity.this, ServerActivity.class));
                 return true;
             }
         });

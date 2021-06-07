@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>阅读</title>
+    <script src="/common/lib/jquery-3.6.0.js"></script>
+    <script src="/common/lib/sweetalert.min.js"></script>
+    <script src="/common/lib/vue.js"></script>
+    <link rel="stylesheet" href="/common/style.css">
+    <style>
+        .read{
+            width: 100%;
+            height: 100%;
+        }
+        .twotitle{
+
+        }
+        .primarytitle{
+            font-size: 20px;
+            line-height: 23px;
+        }
+        .secondtitle{
+            font-size: 12px;
+            line-height: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="head">
+        <button class="menubtn" style="background-image: url('/common/img/slider_handle.png');background-size: contain" onclick="toggledrawer()"></button>
+        <div class="title twotitle">
+            <p class="title primarytitle" id="title1">&nbsp;</p>
+            <p class="title secondtitle" id="title2">&nbsp;</p>
+        </div>
+        <div class="flexspace"></div>
+    </div>
+    <div class="container">
+        <div class="read">
+            <iframe src="" width="100%" height="100%" frameborder="0" id="bookframe"></iframe>
+        </div>
+        <div id="drawermain" style="display: none;" class="drawerslider">
+            <div id="drawerbg" class="drawerbg fadeout" onclick="toggledrawer()"></div>
+            <div id="drawerfg" class="drawerfg drawerhide"></div>
+        </div>
+    </div>
+
+    <script>
+        var draweropen = false;
+        function toggledrawer(){
+            if(!draweropen){
+                $("#drawermain").show();
+                $("#drawerbg").removeClass("fadeout");
+                $("#drawerfg").removeClass("drawerhide");
+            }
+            else{
+                $("#drawerbg").addClass("fadeout");
+                $("#drawerfg").addClass("drawerhide");
+                setTimeout(()=>{
+                    $("#drawermain").hide();
+                },300);
+            }
+            draweropen=!draweropen;
+        }
+        var subdoc = null;
+        $(function (){
+            initInteract();
+           $("#bookframe").attr("src","static/index.html");
+           subdoc = document.getElementById("bookframe").contentWindow;
+        });
+        var messageInteract = {};
+
+        var fontsize = parseInt(localStorage.getItem("fontsize"));
+        if(!isFinite(fontsize)){fontsize=15;}
+        if(isNaN(fontsize)){fontsize=15;}
+
+        function setFontSize(fs){
+            fontsize=fs;
+            localStorage.setItem("fontsize",fs);
+        }
+
+
+        function initInteract(){
+            messageInteract["EPUB_BOOK_INIT_START"]=function (arg){
+                $.ajax({url:"api/bmload/0",success:function (result) {
+                        var bookmark = JSON.parse(result);
+                        subdoc.loadBookAtUrl("",bookmark.epubcft,fontsize)
+                    }});
+                $.ajax({url:"api/bookname",success:function (result) {
+                        $("#title1").text(result);
+                        document.title=result;
+                    }});
+            };
+            messageInteract["EPUB_BOOK_INIT_SUCCESS"]=function (arg){
+                subdoc.reportBookInfo();
+            };
+            messageInteract["EPUBTOC"]=function (arg){
+
+            };
+            messageInteract["EPUBSPINE"]=function (arg){
+
+            };
+            messageInteract["REPORT_LOCATION"]=function (arg){
+                locationPage = arg;
+                showReadingProgress();
+            };
+            messageInteract["REPORT_CHAPTER"]=function (arg){
+                if(arg!=null && arg!=""){
+                    locationChapter = arg;
+                    showReadingProgress();
+                }
+            };
+            messageInteract["SHOW_PROGRESS"]=function (arg){
+
+            };
+            messageInteract["AUTO_SAVE_REQUIRE"]=function (arg){
+
+            };
+            messageInteract["GET_SAVING"]=function (arg){
+                currentPositoin = arg;
+            };
+        }
+        var locationChapter="";
+        var locationPage="1/1";
+        var currentPositoin = "";
+        function showReadingProgress(){
+            $("#title2").text("["+locationPage+"] "+locationChapter);
+        }
+        function reportMessage(type,content){
+            console.warn("<"+type+"::"+content);
+            messageInteract[type](content);
+        }
+    </script>
+</body>
+</html>

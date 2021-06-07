@@ -14,6 +14,7 @@
 </item>
     <item android:title="@string/preference">
         <menu>
+            <item android:id="@+id/mnuServer" android:title="@string/server" android:icon="@drawable/ic_list_go"/>
             <item android:id="@+id/mnuSetting" android:title="@string/settings" android:icon="@drawable/ic_menu_setting"/>
             <item android:id="@+id/mnuAbout" android:title="@string/about" android:icon="@drawable/ic_menu_about"/>
         </menu>

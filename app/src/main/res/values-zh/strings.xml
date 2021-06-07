@@ -47,7 +47,8 @@
     <string name="about_file_name">about_zh</string>
     <string name="daylight">日夜切换</string>
     <string name="tempbookmark">临时书签</string>
-
-    <string name="bookshelf_search">Search Book</string>
+    <string name="server">EPUBium服务器</string>
+    <string name="bookshelf_search">搜索</string>
     <string name="allownight">夜间模式时页面黑色背景</string>
+    <string name="no_internet">没有可用的网络地址</string>
 </resources>

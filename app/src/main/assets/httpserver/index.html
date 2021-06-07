@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPUBium - 图书馆</title>
+    <script src="/common/lib/jquery-3.6.0.js"></script>
+    <script src="/common/lib/sweetalert.min.js"></script>
+    <script src="/common/lib/vue.js"></script>
+    <script src="/common/lib/vue-lazyload.js"></script>
+    <link rel="stylesheet" href="/common/style.css">
+</head>
+<body>
+    
+    <div class="head">
+        <button class="menubtn" style="background-image: url('/common/img/slider_handle.png');background-size: contain" onclick="toggledrawer()"></button>
+        <p class="title" id="title"></p>
+        <div class="flexspace"></div>
+        <input type="text" placeholder="搜索书名，作者" class="menutextbox" name="search" id="txtsearch">
+        <input type="button" class="menubtn" value="搜索" onclick="doSearch($('#txtsearch').val())">
+    </div>
+
+    <div class="container">
+        <div class="read">
+            <div class="booklist" id="booklist">
+                <div class="bookitem" v-for="book in books" v-on:click="bookClick(book)">
+                    <img v-lazy="'/api/cover/'+book.UUID" class="bookcover" alt="">
+                    <p class="bookname">{{book.displayName}}</p>
+                </div>
+            </div>
+        </div>
+        <div id="drawermain" style="display: none;" class="drawerslider">
+            <div id="drawerbg" class="drawerbg fadeout" onclick="toggledrawer()"></div>
+            <div id="drawerfg" class="drawerfg drawerhide">
+                <div class="leftmenu">
+                    <div class="drawer-head">
+                        <img src="/common/img/ic_launcher_round.png" style="margin-top: 30px; margin-left: 20px;" width="64" height="64" alt="">
+                        <p style="margin-left: 20px; font-weight: bold;">EPUBium - 书架</p>
+                    </div>
+                    <div class="uppermenu">全部</div>
+                    <div class="drawermenuitems">
+                        <div class="menuitem" onclick="loadAll()">全部书籍</div>
+                    </div>
+                    <div class="line"></div>
+
+                    <div class="uppermenu">文件夹</div>
+                    <div class="drawermenuitems" id="folderlist">
+                        <div class="menuitem" v-for="folder in folders" v-on:click="loadFolder(folder)">{{folder.displayName}}</div>
+                    </div>
+                </div></div>
+        </div>
+    </div>
+
+
+
+    <script>
+        Vue.use(VueLazyload);
+
+        var menuController = new Vue({
+            el:"#folderlist",
+            data:{
+                folders:[]
+            },
+            methods:{
+                loadFolder:function(folder){
+                    loadFolder(folder);
+                }
+            }
+        });
+        
+        var libraryController = new Vue({
+           el:"#booklist",
+           data:{
+               books:[]
+           },
+            methods:{
+                bookClick:function (book) {
+                    window.open("/api/open/"+book.UUID,"_blank");
+                }   
+            }
+        });
+        
+        $(function (){
+            $.ajax({url:"/api/folders",success:function (result) {
+                menuController.folders = JSON.parse(result);
+            }});
+            loadAll();
+        })
+
+        function loadFolder(folder){
+            $.ajax({url:"/api/folder/"+folder.UUID,success:function (result) {
+                    libraryController.books = JSON.parse(result);
+                    $("#title").text(folder.displayName);
+            }});
+            toggledrawer();
+        }
+        function loadAll(){
+            $.ajax({url:"/api/library",success:function (result) {
+                    libraryController.books = JSON.parse(result);
+
+                    $.ajax({url:"/api/devname",success:function (result2) {
+                            $("#title").text(result2+" 设备上的书");
+                    }});
+            }});
+            if(draweropen){
+                toggledrawer();
+            }
+        }
+        function doSearch(keyword){
+            $.ajax({url:"/api/library",success:function (result) {
+                    var preresult = JSON.parse(result);
+                    libraryController.books=[];
+                    for (let i = 0; i < preresult.length; i++) {
+                        const entry = preresult[i];
+                        if(entry.displayName.indexOf(keyword)!=-1){
+                            libraryController.books.push(entry);
+                        }
+                    }
+                    $("#title").text("搜索结果");
+            }});
+        }
+
+        var draweropen = false;
+        function toggledrawer(){
+            if(!draweropen){
+                $("#drawermain").show();
+                $("#drawerbg").removeClass("fadeout");
+                $("#drawerfg").removeClass("drawerhide");
+            }
+            else{
+                $("#drawerbg").addClass("fadeout");
+                $("#drawerfg").addClass("drawerhide");
+                setTimeout(()=>{
+                    $("#drawermain").hide();
+                },300);
+            }
+            draweropen=!draweropen;
+        }
+    </script>
+</body>
+</html>
