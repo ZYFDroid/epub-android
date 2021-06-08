@@ -64,6 +64,9 @@ body{
     background-color: transparent;
     border: none;
     transition-duration: 200ms;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px;
     flex-shrink: 0;
 }
 
@@ -127,13 +130,9 @@ body{
 .menuitem{
     height: 50px;
     width: 100%;
+    background-size: 24px;
     line-height: 50px;
     flex-shrink: 0;
-}
-
-.menuitem:hover{
-    background-color: lightgray;
-    transition-duration: 200ms;
 }
 
 
@@ -143,13 +142,13 @@ body{
     overflow-x: hidden;
     overflow-y: scroll;
     display: grid;
-    padding: 16px;
+    padding: 8px;
     position: absolute;
     top: 0px;
     left: 0px;
     box-sizing: border-box;
     justify-content: space-around;
-    grid-template-columns: repeat(auto-fill, 130px);
+    grid-template-columns: repeat(auto-fill, 120px);
     scroll-margin-bottom: 20px;
     align-content: start;
 }
@@ -161,6 +160,10 @@ body{
     background-color: white;
     border-radius: 8px;
     margin: 5px;
+}
+
+.bookitem:link{
+    text-decoration: none;
 }
 
 .bookcover{
@@ -230,4 +233,248 @@ body{
     left: 0px;
     transition-duration: 300ms;
     top: 0px;
+}
+
+
+.optionmenufg{
+    background-color: white;
+    z-index: 200;
+    position: absolute;
+    width: 160px;
+    right: 5px;
+    transition-duration: 300ms;
+    top: 5px;
+    box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.432);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.menuhide{
+    transform: translateX(40%) translateY(-100%);
+    transition-duration: 220ms;
+}
+.optionmenuitem{
+    height: 40px;
+    width: 100%;
+    background-size: 24px;
+    background-position-x: 8px;
+    background-position-y: center;
+    padding-left: 40px;
+    font-size: 18px;
+    line-height: 40px;
+    box-sizing: border-box;
+    transition-duration: 300ms;
+    background-repeat: no-repeat;
+}
+
+.darkhover{
+    transition-duration: 300ms;
+}
+.darkhover:hover{
+    background-color: lightgray;
+    transition-duration: 300ms;
+}
+
+.bookmarkoff{
+    background-image: url('/common/img/ic_menu_bookmark_unlock.png');
+}
+
+.bookmarkon{
+    background-image: url('/common/img/ic_menu_bookmark_lock.png');
+}
+
+
+.tabcontainer{
+    width: 100%;
+    height: 100%;
+}
+
+.tabheaders{
+    width: 100%;
+    height: 70px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+}
+
+.tabheader{
+    height: 100%;
+    flex-grow: 2;
+    text-align: center;
+    box-sizing: border-box;
+    padding-top: 40px;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    background-position: center 12px;
+}
+
+.tab1{
+    background-image: url("/common/img/ic_menu_chapters.png");
+}
+.tab2{
+    background-image: url("/common/img/ic_menu_bookmark.png");
+}
+.tabselected{
+    border-bottom: solid var(--accent-color) 2px;
+}
+
+.tabpages{
+    position: absolute;
+    top: 70px;
+    left: 0px;
+    width: 100%;
+    height: calc(100% - 70px);
+}
+
+.tabpage{
+    overflow: scroll;
+    width: 100%;
+    height: 100%;
+}
+
+.tableofcontent{
+    height: 40px;
+    width: 100%;
+    background-position-y: center;
+    background-position-x: calc(100% - 44px);
+    background-image: url("/common/img/ic_list_go.png");
+    background-size: 24px;
+    padding-left: 8px;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    line-height: 40px;
+    font-size: 13px;
+    white-space: pre;
+    padding-right: 32px;
+}
+
+.savecard{
+    width: calc(100% - 20px);
+    height: 100px;
+    box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.432);
+    border-radius: 8px;
+    margin: 10px;
+    position: relative;
+
+}
+
+.savetime{
+    font-weight: bold;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 24px;
+    height: 24px;
+    width: auto;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    padding-left: 10px;
+    color: white;
+    padding-right: 30px;
+    background-image: url("/common/img/bm_bg.png");
+    background-repeat: no-repeat;
+    background-size: 100%,100%;
+    border-radius: 8px 0px 0px 0px;
+}
+
+.savedesc{
+    top: 26px;
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    height:74px;
+}
+
+.savetitle{
+    line-height: 17px;
+    font-size: 14px;
+    box-sizing: border-box;
+    width: calc(100% - 80px);
+    height: 74%;
+    padding-left: 10px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    padding-top: 20px;
+    white-space: pre;
+    overflow: hidden;
+}
+
+.savebtns{
+    height: 100%;
+    position: absolute;
+    left: calc(100% - 80px);;
+    width: 80px;
+    top: 0px;
+}
+
+.savebtn{
+    color: var(--accent-color);
+    text-align: center;
+    line-height: 37px;
+    height: 50%;
+    width: 100%;
+}
+
+.progressbar{
+    height: 2px;
+    width: 100%;
+    position: absolute;
+    animation: lr;
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+    margin-top: 4px;
+    background-color: var(--accent-color);
+}
+
+@keyframes lr {
+    0%{
+        transform: translateX(-100%);
+    }
+    50%{
+        transform: translateX(0%);
+    }
+    100%{
+        transform: translateX(100%);
+    }
+}
+
+.snackbar{
+    position: absolute;
+    height: 40px;
+    width: 100%;
+    left: 0px;
+    bottom: -40px;
+    box-sizing: border-box;
+    line-height: 40px;
+    font-size: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+    color: white;
+    z-index: 200;
+    background-color: #333;
+    box-shadow: 0px 0px 3px 0px gray;
+}
+@keyframes toast {
+    0%{
+        bottom: -40px;
+    }
+    25%{
+        bottom: 0px;
+    }
+    75%{
+        bottom: 0px;
+    }
+    100%{
+        bottom: -40px;
+    }
+}
+.snackbar-anim{
+    animation: toast;
+    animation-duration: 1000ms;
 }

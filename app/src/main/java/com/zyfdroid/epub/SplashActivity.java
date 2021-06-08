@@ -3,6 +3,7 @@ package com.zyfdroid.epub;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.zyfdroid.epub.server.ServerService;
 import com.zyfdroid.epub.utils.SpUtils;
 
 import java.io.File;
@@ -90,7 +92,14 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         }
-
+        if(BuildConfig.DEBUG){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(new Intent(this, ServerService.class));
+            }
+            else{
+                startService(new Intent(this, ServerService.class));
+            }
+        }
         hWnd.postDelayed(new Runnable() {
             @Override
             public void run() {

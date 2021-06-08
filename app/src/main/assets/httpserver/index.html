@@ -18,16 +18,16 @@
         <p class="title" id="title"></p>
         <div class="flexspace"></div>
         <input type="text" placeholder="搜索书名，作者" class="menutextbox" name="search" id="txtsearch">
-        <input type="button" class="menubtn" value="搜索" onclick="doSearch($('#txtsearch').val())">
+        <input type="button" class="menubtn" style="background-image: url('/common/img/ic_menu_searchinlibrary.png')" value="" onclick="doSearch($('#txtsearch').val())">
     </div>
 
     <div class="container">
         <div class="read">
             <div class="booklist" id="booklist">
-                <div class="bookitem" v-for="book in books" v-on:click="bookClick(book)">
+                <a class="bookitem" v-for="book in books" style="display: block" v-bind:href="'/api/open/'+book.UUID" target="_blank">
                     <img v-lazy="'/api/cover/'+book.UUID" class="bookcover" alt="">
-                    <p class="bookname">{{book.displayName}}</p>
-                </div>
+                    <p style="text-decoration: none" class="bookname">{{book.displayName}}</p>
+                </a>
             </div>
         </div>
         <div id="drawermain" style="display: none;" class="drawerslider">
@@ -40,7 +40,7 @@
                     </div>
                     <div class="uppermenu">全部</div>
                     <div class="drawermenuitems">
-                        <div class="menuitem" onclick="loadAll()">全部书籍</div>
+                        <div class="menuitem darkhover" onclick="loadAll()">全部书籍</div>
                     </div>
                     <div class="line"></div>
 
@@ -73,12 +73,7 @@
            el:"#booklist",
            data:{
                books:[]
-           },
-            methods:{
-                bookClick:function (book) {
-                    window.open("/api/open/"+book.UUID,"_blank");
-                }   
-            }
+           }
         });
         
         $(function (){

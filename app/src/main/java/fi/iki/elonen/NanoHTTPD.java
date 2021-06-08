@@ -949,6 +949,7 @@ public abstract class NanoHTTPD {
                 if (r == null) {
                     throw new ResponseException(Response.Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: Serve() returned a null response.");
                 } else {
+                    r.addHeader("Server","EPUBium Android, NanoHTTPD");
                     String acceptEncoding = this.headers.get("accept-encoding");
                     this.cookies.unloadQueue(r);
                     r.setRequestMethod(this.method);

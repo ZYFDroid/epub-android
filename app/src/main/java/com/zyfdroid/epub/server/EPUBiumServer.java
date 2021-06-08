@@ -92,6 +92,8 @@ public class EPUBiumServer extends NanoHTTPD {
         return handleAssetResponse(suburl,"","epubjs/");
     }
 
+    HashMap<String, DBUtils.BookMark> cachedBookmarks = new HashMap<>();
+
     public Response serveReadingApi(String bookuuid,String api,IHTTPSession session){
         if(api.startsWith("bmload/")){
             int requestId = Integer.parseInt(replaceFirst(api,"bmload/"));
@@ -102,7 +104,11 @@ public class EPUBiumServer extends NanoHTTPD {
         }
         if(api.startsWith("bmsave/")){
             int requestId = Integer.parseInt(replaceFirst(api,"bmsave/"));
-            //return newFixedLengthResponse(gson.toJson(DBUtils.queryBookmarks(appContext,bookuuid).get(requestId)));
+            Map<String,List<String>> queryparam = session.getParameters();
+            String name = queryparam.get("name").get(0);
+            String cfi = queryparam.get("cfi").get(0);
+            DBUtils.setBookmark(bookuuid,requestId,name,cfi);
+            return newFixedLengthResponse("OK");
         }
         if(api.equals("bookname")){
             return newFixedLengthResponse(DBUtils.queryBooks("uuid = ?",bookuuid).get(0).getDisplayName());
@@ -124,7 +130,7 @@ public class EPUBiumServer extends NanoHTTPD {
             return newFixedLengthResponse(gson.toJson(bookEntries));
         }
         if(apipath.equals("folders")){
-            bookEntries = DBUtils.queryBooks("type=1 order by display_name");
+            bookEntries = DBUtils.queryFoldersNotEmpty();
             return newFixedLengthResponse(gson.toJson(bookEntries));
         }
         if(apipath.startsWith("folder/")){
@@ -136,11 +142,13 @@ public class EPUBiumServer extends NanoHTTPD {
             String uuid = replaceFirst(apipath,"cover/");
             bookEntries = DBUtils.queryBooks("uuid = ?",uuid);
             Bitmap bmp = EpubUtils.getBookCoverInCache(bookEntries.get(0));
+            Bitmap bmp2 = Bitmap.createScaledBitmap(bmp,120,200,false);
+            bmp.recycle();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG,80,baos);
+            bmp2.compress(Bitmap.CompressFormat.JPEG,80,baos);
             ByteArrayInputStream bis = new ByteArrayInputStream(baos.toByteArray());
             safeClose(baos);
-            bmp.recycle();
+            bmp2.recycle();
             return newFixedLengthResponse(Response.Status.OK,"image/jpeg",bis,bis.available());
         }
         if(apipath.startsWith("open/")){
