@@ -53,4 +53,5 @@
     <string name="server">EPUBium Server</string>
     <string name="no_internet">Network not available</string>
     <string name="eink">Eink Mode</string>
+    <string name="requirerestart">Eink Mode require restart to take effect</string>
 </resources>

@@ -34,7 +34,7 @@
         tools:openDrawer="start"
         android:layout_height="match_parent">
 
-       <LinearLayout
+       <FrameLayout
            android:layout_width="match_parent"
            android:orientation="vertical"
            android:layout_height="match_parent">
@@ -42,16 +42,21 @@
            <WebView
                android:id="@+id/webEpub"
                android:layout_width="match_parent"
+               android:layout_height="match_parent" />
+
+           <View
+               android:layout_width="20dp"
                android:layout_height="match_parent"
-               android:paddingBottom="1px" />
-
-
-       </LinearLayout>
+               android:id="@+id/einkDrawerOpener"
+               android:clickable="true"
+               android:visibility="gone"/>
+       </FrameLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/whitebg"
             android:orientation="vertical"
+            android:id="@+id/drwLeft"
             android:layout_gravity="start">
 
             <com.google.android.material.tabs.TabLayout
@@ -66,12 +71,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
-                <androidx.recyclerview.widget.RecyclerView
+                <com.zyfdroid.epub.views.EinkRecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
                     android:id="@+id/listChapters"/>
-                <androidx.recyclerview.widget.RecyclerView
+                <com.zyfdroid.epub.views.EinkRecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="gone"
@@ -89,5 +94,14 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:indeterminate="true"
         style="?android:attr/progressBarStyleHorizontal"/>
+
+    <View
+        android:layout_width="30dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_height="match_parent"
+        android:id="@+id/einkDrawerCloser"
+        android:layout_gravity="right"
+        android:visibility="gone"
+        android:clickable="true"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

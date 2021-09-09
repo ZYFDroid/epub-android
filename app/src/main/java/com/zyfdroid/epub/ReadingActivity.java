@@ -28,6 +28,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -40,6 +41,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.EpubUtils;
 import com.zyfdroid.epub.utils.SpUtils;
 import com.zyfdroid.epub.utils.TextUtils;
+import com.zyfdroid.epub.views.EinkRecyclerView;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -180,7 +183,75 @@ public class ReadingActivity extends AppCompatActivity {
         setTitle(readingBook.getDisplayName());
         getSupportActionBar().setSubtitle(getString(R.string.load_loading));
         hWnd.postDelayed(loadingLazyShower,200);
+
+            hWnd.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(SpUtils.getInstance(ReadingActivity.this).getEinkMode()) {
+                        EinkRecyclerView rv = findViewById(R.id.listChapters);
+                        EinkRecyclerView rv2 = findViewById(R.id.listBookmarks);
+                        rv.startEinkMode(LinearLayout.VERTICAL, (int) ((float) rv.getHeight() * 0.9f));
+                        rv2.startEinkMode(LinearLayout.VERTICAL, (int) ((float) rv.getHeight() * 0.9f));
+                        //                                                      ↑ There is no mistakes.
+                        //                                               The rv2 is invisible and its height is 0
+                        //                                                  so use rv instead.
+                        findViewById(R.id.einkDrawerOpener).setVisibility(View.VISIBLE);
+                        findViewById(R.id.einkDrawerOpener).setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                if(event.getAction()==MotionEvent.ACTION_UP && event.getX() > v.getWidth()){
+                                    drwMain.openDrawer(GravityCompat.START);
+                                }
+                                return true;
+                            }
+                        });
+                        drwMain.addDrawerListener(einkGestureSwitcher);
+                        View closer = findViewById(R.id.einkDrawerCloser);
+                        ViewGroup.LayoutParams lp = closer.getLayoutParams();
+                        lp.width = drwMain.getWidth() /3;
+                        closer.setLayoutParams(lp);
+                        closer.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                if(event.getAction()==MotionEvent.ACTION_UP){
+                                    drwMain.closeDrawer(GravityCompat.START);
+                                }
+                                return true;
+                            }
+                        });
+                    }
+                    View drvLeft = findViewById(R.id.drwLeft);
+                    ViewGroup.LayoutParams lp = drvLeft.getLayoutParams();
+                    lp.width = drwMain.getWidth() *2 / 3;
+                    drvLeft.setLayoutParams(lp);
+
+                }
+            }, 300);
+
     }
+
+    DrawerLayout.DrawerListener einkGestureSwitcher = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+        }
+
+        @Override
+        public void onDrawerOpened(@NonNull View drawerView) {
+            findViewById(R.id.einkDrawerCloser).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onDrawerClosed(@NonNull View drawerView) {
+            findViewById(R.id.einkDrawerCloser).setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
+    };
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

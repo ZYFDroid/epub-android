@@ -4,7 +4,7 @@
     android:layout_height="120dp">
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="120dp"
         android:src="@drawable/bg_drawer_head"
         android:scaleType="centerCrop"/>
 

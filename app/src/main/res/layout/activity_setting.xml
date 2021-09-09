@@ -28,6 +28,10 @@
         android:gravity="center_vertical"
         android:id="@+id/chkEink"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/requirerestart"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

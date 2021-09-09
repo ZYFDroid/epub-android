@@ -11,7 +11,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import android.os.Bundle;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -26,6 +26,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -41,7 +42,8 @@ import com.zyfdroid.epub.utils.BookScanner;
 import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.EpubUtils;
 import com.zyfdroid.epub.utils.SpUtils;
-import com.zyfdroid.epub.views.MyABDrawerToggle;
+import com.zyfdroid.epub.utils.ViewUtils;
+import com.zyfdroid.epub.views.EinkRecyclerView;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +53,7 @@ import java.util.List;
 
 public class BookshelfActivity extends AppCompatActivity {
     Gson JsonConvert = new Gson();
-    NavigationView navMain;
+    EinkRecyclerView navMain;
     Picasso mCoverLoader;
     Handler hWnd = new Handler();
     DrawerLayout drwMain;
@@ -62,7 +64,8 @@ public class BookshelfActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookshelf);
-        mCoverLoader = new Picasso.Builder(this).downloader(new BookCoverDownloader()).build();
+        mCoverLoader = new Picasso.Builder(this).downloader(new BookCoverDownloader()).indicatorsEnabled(false).build();
+
         setSupportActionBar((Toolbar) findViewById(R.id.titMain));
         drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         drwButton = new ActionBarDrawerToggle(this,drwMain,(Toolbar) findViewById(R.id.titMain),R.string.app_name,R.string.app_name);
@@ -84,65 +87,87 @@ public class BookshelfActivity extends AppCompatActivity {
         drwMain.addDrawerListener(drwButton);
 
         drwButton.syncState();
-        navMain = (NavigationView) findViewById(R.id.navMain);
+        navMain = (EinkRecyclerView) findViewById(R.id.navMain);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        navMain.setLayoutManager(linearLayoutManager);
+        folderAdapter = new FolderDrawerAdapter(new ArrayList<>());
+        navMain.setAdapter(folderAdapter);
 
-        navMain.getMenu().findItem(R.id.mnuAllBook).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-                if(drwMain.isDrawerOpen(GravityCompat.START)){
-                    drwMain.closeDrawer(GravityCompat.START);
-                }
-                loadData();
-                return true;
-            }
-        });
-        navMain.getMenu().findItem(R.id.mnuSetting).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-                if(drwMain.isDrawerOpen(GravityCompat.START)){
-                    drwMain.closeDrawer(GravityCompat.START);
-                }
-                startActivity(new Intent(BookshelfActivity.this,SettingActivity.class));
-                return true;
-            }
-        });
-        navMain.getMenu().findItem(R.id.mnuAbout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-                if(drwMain.isDrawerOpen(GravityCompat.START)){
-                    drwMain.closeDrawer(GravityCompat.START);
-                }
-                startActivity(new Intent(BookshelfActivity.this,AboutActivity.class));
-                return true;
-            }
-        });
-        navMain.getMenu().findItem(R.id.mnuServer).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-                if(drwMain.isDrawerOpen(GravityCompat.START)){
-                    drwMain.closeDrawer(GravityCompat.START);
-                }
-                startActivity(new Intent(BookshelfActivity.this, ServerActivity.class));
-                return true;
-            }
-        });
         hWnd.postDelayed(new Runnable() {
             @Override
             public void run() {
                 loadData();
             }
         },300);
+        hWnd.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(SpUtils.getInstance(BookshelfActivity.this).getEinkMode()){
+                    EinkRecyclerView rv = (EinkRecyclerView) findViewById(R.id.listBooks);
+                    rv.startEinkMode(LinearLayout.HORIZONTAL,rv.getWidth());
+                    navMain.startEinkMode(LinearLayout.VERTICAL,navMain.getHeight());
+                    findViewById(R.id.einkDrawerOpener).setVisibility(View.VISIBLE);
+                    findViewById(R.id.einkDrawerOpener).setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if(event.getAction()==MotionEvent.ACTION_UP && event.getX() > v.getWidth()){
+                                drwMain.openDrawer(GravityCompat.START);
+                            }
+                            return true;
+                        }
+                    });
+                    drwMain.addDrawerListener(einkGestureSwitcher);
+                    View closer = findViewById(R.id.einkDrawerCloser);
+                    ViewGroup.LayoutParams lp = closer.getLayoutParams();
+                    lp.width = drwMain.getWidth() /3;
+                    closer.setLayoutParams(lp);
+                    closer.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if(event.getAction()==MotionEvent.ACTION_UP){
+                                drwMain.closeDrawer(GravityCompat.START);
+                            }
+                            return true;
+                        }
+                    });
+                }
+                ViewGroup.LayoutParams lp = navMain.getLayoutParams();
+                lp.width = drwMain.getWidth() * 2 / 3;
+                navMain.setLayoutParams(lp);
+            }
+        },301);
     }
+
+
+    DrawerLayout.DrawerListener einkGestureSwitcher = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+        }
+
+        @Override
+        public void onDrawerOpened(@NonNull View drawerView) {
+            findViewById(R.id.einkDrawerCloser).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onDrawerClosed(@NonNull View drawerView) {
+            findViewById(R.id.einkDrawerCloser).setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
+    };
 
     public void loadData(){
         setTitle(R.string.all_books);
         isAllBook = true;
-        loadMenuRange(navMain.getMenu().findItem(R.id.mnuFolders),DBUtils.queryFoldersNotEmpty().toArray(new DBUtils.BookEntry[0]));
+        loadMenuRange(DBUtils.queryFoldersNotEmpty().toArray(new DBUtils.BookEntry[0]));
         loadBooksList(DBUtils.queryBooks("type=0 order by lastopen desc"));
+
     }
 
     @Override
@@ -242,40 +267,84 @@ public class BookshelfActivity extends AppCompatActivity {
 
     List<MenuItem> folderMenuItems = new ArrayList<>();
 
-    private static final int MENU_GROUP =392844;
-    public void loadMenuRange(MenuItem mi,DBUtils.BookEntry... strs){
-        mi.getSubMenu().removeGroup(MENU_GROUP);
-        folderMenuItems.clear();
-        for (int i = 0; i < strs.length; i++) {
-            MenuItem mmi =
-                mi.getSubMenu().add(MENU_GROUP,Menu.NONE,Menu.NONE,strs[i].getDisplayName()).setIcon(R.drawable.ic_menu_folder).setOnMenuItemClickListener(new FolderMenuClickListener(strs[i]));
-            folderMenuItems.add(mmi);
-        }
-        mi.getSubMenu().setGroupCheckable(MENU_GROUP,true,true);
-    }
-    private class FolderMenuClickListener implements MenuItem.OnMenuItemClickListener{
-        DBUtils.BookEntry folder;
+    FolderDrawerAdapter folderAdapter;
 
-        public FolderMenuClickListener(DBUtils.BookEntry folder) {
-            this.folder = folder;
+    public void loadMenuRange(DBUtils.BookEntry... strs){
+        folderAdapter.data.clear();
+        folderAdapter.data.add(new FolderViewData(0,null,0));
+        folderAdapter.data.add(new FolderViewData(1,getText(R.string.all).toString(),0));
+        folderAdapter.data.add(new FolderViewData(2,getText(R.string.all_books).toString(),R.drawable.ic_menu_folder){{clicker = BookshelfActivity.this::loadAll;}});
+        folderAdapter.data.add(new FolderViewData(1,getText(R.string.folders).toString(),0));
+        for (int i = 0; i < strs.length; i++) {
+            FolderViewData fd = new FolderViewData(2,strs[i].getDisplayName(),R.drawable.ic_menu_folder);
+            fd.clicker = new FolderClicker(strs[i]);
+            folderAdapter.data.add(fd);
+        }
+        folderAdapter.data.add(new FolderViewData(1,getText(R.string.preference).toString(),0));
+        folderAdapter.data.add(new FolderViewData(2,getText(R.string.server).toString(),R.drawable.ic_list_go){{
+            clicker = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+                    if(drwMain.isDrawerOpen(GravityCompat.START)){
+                        drwMain.closeDrawer(GravityCompat.START);
+                    }
+                    startActivity(new Intent(BookshelfActivity.this,ServerActivity.class));
+                }
+            };
+        }});
+        folderAdapter.data.add(new FolderViewData(2,getText(R.string.settings).toString(),R.drawable.ic_menu_setting){{
+            clicker = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+                    if(drwMain.isDrawerOpen(GravityCompat.START)){
+                        drwMain.closeDrawer(GravityCompat.START);
+                    }
+                    startActivity(new Intent(BookshelfActivity.this,SettingActivity.class));
+                }
+            };
+        }});
+        folderAdapter.data.add(new FolderViewData(2,getText(R.string.about).toString(),R.drawable.ic_menu_about){{
+            clicker = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+                    if(drwMain.isDrawerOpen(GravityCompat.START)){
+                        drwMain.closeDrawer(GravityCompat.START);
+                    }
+                    startActivity(new Intent(BookshelfActivity.this,AboutActivity.class));
+                }
+            };
+        }});
+        folderAdapter.update();
+    }
+
+    class FolderClicker implements View.OnClickListener{
+        DBUtils.BookEntry be;
+
+        public FolderClicker(DBUtils.BookEntry be) {
+            this.be = be;
         }
 
         @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            for (MenuItem omi :
-                    folderMenuItems) {
-                omi.setChecked(false);
-            }
-            item.setChecked(true);
+        public void onClick(View v) {
             DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
             if(drwMain.isDrawerOpen(GravityCompat.START)){
                 drwMain.closeDrawer(GravityCompat.START);
             }
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 order by lastopen desc",folder.getUUID());
-            setTitle(folder.getDisplayName());
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 order by lastopen desc",be.getUUID());
+            setTitle(be.getDisplayName());
             loadBooksList(lsResult);
-            isAllBook = false;currentDirectory = folder;
-            return false;
+            isAllBook = false;currentDirectory = be;
+        }
+    }
+
+    void loadAll(View v){
+        this.loadData();
+        DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+        if(drwMain.isDrawerOpen(GravityCompat.START)){
+            drwMain.closeDrawer(GravityCompat.START);
         }
     }
 
@@ -292,7 +361,12 @@ public class BookshelfActivity extends AppCompatActivity {
 
     public void onBookClick(DBUtils.BookEntry be){
         DBUtils.execSql("update library set lastopen=? where uuid=?",System.currentTimeMillis(),be.getUUID());
-        if(isAllBook){loadData();}
+        hWnd.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(isAllBook){loadData();}
+            }
+        },2000);
         if(SpUtils.getInstance(this).shouldOpenWithExternalReader()){
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.fromFile(new File(be.getPath())));
@@ -337,8 +411,10 @@ public class BookshelfActivity extends AppCompatActivity {
         public void onBindViewHolder(BookAdapterViewHolder holder, int position) {
             DBUtils.BookEntry bk = books.get(position);
             holder.bookName.setText(bk.getDisplayName());
-            mCoverLoader.load(Uri.parse("epubentry://"+Base64.encodeToString(JsonConvert.toJson(bk).getBytes(),Base64.URL_SAFE))).into(holder.bookCover);
-            holder.crdBook.setOnClickListener(new BookClicker(bk));
+            mCoverLoader.load(Uri.parse("epubentry://"+Base64.encodeToString(JsonConvert.toJson(bk).getBytes(),Base64.URL_SAFE))).noFade().into(holder.bookCover);
+            holder.crdBook.setClickable(true);
+            holder.crdBook.setOnTouchListener(new BookClicker(bk));
+
         }
         @Override
         public int getItemCount() {
@@ -358,15 +434,20 @@ public class BookshelfActivity extends AppCompatActivity {
                 crdBook = rootView.findViewById(R.id.crdBook);
             }
         }
-        class BookClicker implements View.OnClickListener{
+         class BookClicker implements View.OnTouchListener{
             DBUtils.BookEntry entry;
             public BookClicker(DBUtils.BookEntry entry) {
                 this.entry = entry;
             }
 
+
             @Override
-            public void onClick(View v) {
-                onBookClick(entry);
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    onBookClick(entry);
+                    return true;
+                }
+                return false;
             }
         }
     }
@@ -383,5 +464,95 @@ public class BookshelfActivity extends AppCompatActivity {
         }
     }
 
+
+    class FolderDrawerAdapter extends RecyclerView.Adapter<FolderDrawerAdapter.FolderDrawerViewHolder>{
+
+        public List<FolderViewData> data;
+
+        public FolderDrawerAdapter(List<FolderViewData> data) {
+            this.data = data;
+        }
+
+        public void update(){
+            notifyDataSetChanged();
+        }
+
+        @NonNull
+        @Override
+        public FolderDrawerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            if(viewType==0){
+                return new FolderDrawerViewHolder(getLayoutInflater().inflate(R.layout.activity_bookshelf_navhead,parent,false),0);
+            }
+            if(viewType==1){
+                return new FolderDrawerViewHolder(getLayoutInflater().inflate(R.layout.adapter_folder_divider,parent,false),1);
+            }
+            if(viewType==2){
+                return new FolderDrawerViewHolder(getLayoutInflater().inflate(R.layout.adapter_folder_item,parent,false),2);
+            }
+
+            return null;
+        }
+
+
+        @Override
+        public void onBindViewHolder(@NonNull BookshelfActivity.FolderDrawerAdapter.FolderDrawerViewHolder holder, int position) {
+            if(getItemViewType(position)==0){
+
+            }
+            if(getItemViewType(position)==1){
+                holder.txtText.setText(data.get(position).text);
+            }
+            if(getItemViewType(position)==2){
+                FolderViewData d = data.get(position);
+                holder.txtText.setText(d.text);
+                holder.imgIcon.setImageResource(d.icon);
+                holder.rootView.setOnClickListener(d.clicker);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if(position==0){return 0;}
+            return data.get(position).type;
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
+
+        class FolderDrawerViewHolder extends RecyclerView.ViewHolder{
+            private int type = 0;
+            TextView txtText;
+            ImageView imgIcon;
+            View rootView;
+            public FolderDrawerViewHolder(@NonNull View itemView,int type) {
+                super(itemView);
+                this.type=type;
+                rootView = itemView;
+                if(type==1){
+                    txtText = itemView.findViewById(R.id.txtText);
+                }
+                if(type==2){
+                    txtText = itemView.findViewById(R.id.txtText);
+                    imgIcon = itemView.findViewById(R.id.imgIcon);
+                    rootView = itemView.findViewById(R.id.rootView);
+                }
+            }
+        }
+
+
+    }
+    class FolderViewData{
+        public int type;
+        public String text;
+        public int icon;
+        public View.OnClickListener clicker = null;
+        public FolderViewData(int type, String text, int icon) {
+            this.type = type;
+            this.text = text;
+            this.icon = icon;
+        }
+    }
 }
 

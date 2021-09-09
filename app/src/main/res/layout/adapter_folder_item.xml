@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/rootView"
+    android:clickable="true"
+    android:background="@drawable/bg_ripple"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="8dp"
+        android:id="@+id/imgIcon"
+        android:src="@drawable/ic_menu_bookmark"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textdaylight"
+            android:padding="15dp"
+            android:id="@+id/txtText"
+            android:layout_weight="1"
+            android:text="Loren"/></LinearLayout>
+
+</LinearLayout>

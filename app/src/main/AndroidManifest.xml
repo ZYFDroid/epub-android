@@ -53,6 +53,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ReadingActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
     </application>
 

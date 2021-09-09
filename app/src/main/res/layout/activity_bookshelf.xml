@@ -30,16 +30,21 @@
         android:layout_height="match_parent">
         <include layout="@layout/activity_bookshelf_main"/>
 
-        <com.google.android.material.navigation.NavigationView
+        <com.zyfdroid.epub.views.EinkRecyclerView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:fitsSystemWindows="false"
-            app:headerLayout="@layout/activity_bookshelf_navhead"
-            app:menu="@menu/menu_main"
+            android:background="@color/whitebg"
             android:id="@+id/navMain"/>
 
     </com.zyfdroid.epub.views.MyDrawerView>
 
-
+    <View
+        android:layout_width="30dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_height="match_parent"
+        android:id="@+id/einkDrawerCloser"
+        android:layout_gravity="right"
+        android:visibility="gone"
+        android:clickable="true"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

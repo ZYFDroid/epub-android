@@ -3,12 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+
+
+    <com.zyfdroid.epub.views.EinkRecyclerView
         android:layout_width="match_parent"
         android:id="@+id/listBooks"
         android:layout_height="match_parent">
 
-    </androidx.recyclerview.widget.RecyclerView>
+    </com.zyfdroid.epub.views.EinkRecyclerView>
 
     <TextView
         android:layout_width="match_parent"
@@ -17,5 +19,10 @@
         android:id="@+id/txtScanHint"
         android:visibility="gone"
         android:text="@string/bookshelf_nobook"/>
-
+    <View
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:id="@+id/einkDrawerOpener"
+        android:clickable="true"
+        android:visibility="gone"/>
 </FrameLayout>

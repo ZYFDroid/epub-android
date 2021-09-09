@@ -17,9 +17,10 @@ android {
     defaultConfig {
         applicationId "com.zyfdroid.epub"
         minSdkVersion 21
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
-        versionCode 1020002
-        versionName "1.2.0.2"
+        versionCode 1020003
+        versionName "1.2.0.3"
         signingConfig signingConfigs.debug
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
