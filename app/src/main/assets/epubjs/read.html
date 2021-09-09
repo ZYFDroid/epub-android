@@ -72,8 +72,8 @@
                     <div class="tabpages" id="leftvue">
                         <div class="tabpage" id="tabpage1">
                             <div id="tocs">
-                                <div class="tableofcontent darkhover" v-for="chapter in chapters" v-on:click="chapterClick(chapter)">
-                                    <img v-bind:width="chapter.stack * 10"/>{{chapter.label.trim()}}
+                                <div class="tableofcontent" v-for="chapter in chapters" >
+                                    <img v-bind:width="chapter.stack * 10"/>{{chapter.label.trim()}}<img src="/common/img/ic_list_go.png" width="40" height="40" class="darkhover btngo" v-on:click="chapterClick(chapter)"/>
                                 </div>
                             </div>
                         </div>
@@ -271,7 +271,7 @@
             $("#title2").text("["+locationPage+"] "+locationChapter);
         }
         function reportMessage(type,content){
-            console.warn("<"+type+"::"+content);
+            //console.warn("<"+type+"::"+content);
             messageInteract[type](content);
         }
         function mnuFontsize(){
@@ -279,17 +279,23 @@
             $("#optionmenufg>.typemnu0").hide();
         }
         function mnuQS(){
+            toast("正在存档");
             $.ajax("api/bmsave/"+1+"?name="+encodeURI(locationPage+"\n"+locationChapter)+"&cfi="+encodeURI(currentPositoin),{
                 success:function () {
                     loadAllBookmark();
                     toast("存档已保存");
+                },error:function () {
+                    toast("存档失败")
                 }});
         }
         function mnuQL(){
+            toast("正在读档");
             $.ajax({url:"api/bmload/1",success:function (result) {
                     var bookmark = JSON.parse(result);
                     subdoc.navTo(bookmark.epubcft);
                     toast("存档已读取");
+                },error:function () {
+                    toast("读取失败")
                 }});
         }
 
@@ -322,10 +328,13 @@
                     subdoc.navTo(chapter.href);
                 },
                 saveClick:function (save) {
+                    toast("正在存档");
                     $.ajax("api/bmsave/"+save.slot+"?name="+encodeURI(locationPage+"\n"+locationChapter)+"&cfi="+encodeURI(currentPositoin),{
                         success:function () {
                             loadAllBookmark();
                             toast("存档已保存");
+                        },error:function () {
+                            toast("存档失败")
                         }});
                 },
                 loadClick:function (save) {
@@ -347,6 +356,8 @@
         function loadAllBookmark(){
             $.ajax({url:"api/bmloadall",success:function (result) {
                     leftvue.saves = JSON.parse(result);
+                },error:function () {
+                    toast("获取存档失败")
                 }})
         }
 
@@ -360,6 +371,8 @@
                 $.ajax("api/bmsave/"+0+"?name="+encodeURI(locationPage+"\n"+locationChapter)+"&cfi="+encodeURI(currentPositoin),{
                     success:function () {
                         loadAllBookmark();
+                    },error:function () {
+                        toast("自动存档失败")
                     }});
                 clearInterval(autoSaver);
                 autoSaver=null;

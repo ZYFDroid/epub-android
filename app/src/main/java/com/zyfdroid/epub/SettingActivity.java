@@ -17,6 +17,7 @@ public class SettingActivity extends AppCompatActivity {
 
     CheckBox chkOpenExternal;
     CheckBox chkAllowNight;
+    CheckBox chkEink;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +26,9 @@ public class SettingActivity extends AppCompatActivity {
         chkOpenExternal.setChecked(SpUtils.getInstance(this).shouldOpenWithExternalReader());
         chkAllowNight = findViewById(R.id.chkAllowNight);
         chkAllowNight.setChecked(SpUtils.getInstance(this).getAllowNightMode());
+
+        chkEink = findViewById(R.id.chkEink);
+        chkEink.setChecked(SpUtils.getInstance(this).getEinkMode());
         chkOpenExternal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -35,6 +39,12 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.getInstance(SettingActivity.this).setAllowNightMode(isChecked);
+            }
+        });
+        chkEink.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.getInstance(SettingActivity.this).setEinkMode(isChecked);
             }
         });
     }

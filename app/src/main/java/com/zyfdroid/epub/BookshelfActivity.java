@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.StrictMode;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -39,6 +41,7 @@ import com.zyfdroid.epub.utils.BookScanner;
 import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.EpubUtils;
 import com.zyfdroid.epub.utils.SpUtils;
+import com.zyfdroid.epub.views.MyABDrawerToggle;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,15 +54,35 @@ public class BookshelfActivity extends AppCompatActivity {
     NavigationView navMain;
     Picasso mCoverLoader;
     Handler hWnd = new Handler();
+    DrawerLayout drwMain;
+    ActionBarDrawerToggle drwButton;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookshelf);
         mCoverLoader = new Picasso.Builder(this).downloader(new BookCoverDownloader()).build();
         setSupportActionBar((Toolbar) findViewById(R.id.titMain));
-        DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-        ActionBarDrawerToggle drwButton = new ActionBarDrawerToggle(this,drwMain,(Toolbar) findViewById(R.id.titMain),R.string.app_name,R.string.app_name);
-        drwMain.setDrawerListener(drwButton);
+        drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+        drwButton = new ActionBarDrawerToggle(this,drwMain,(Toolbar) findViewById(R.id.titMain),R.string.app_name,R.string.app_name);
+        if(SpUtils.getInstance(this).getEinkMode()) {
+            ((Toolbar) findViewById(R.id.titMain)).setNavigationOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            if(drwMain.isDrawerOpen(GravityCompat.START)){
+                                drwMain.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                            }
+                            else{
+                                drwMain.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+                            }
+                        }
+
+            });
+        }
+        drwMain.addDrawerListener(drwButton);
+
         drwButton.syncState();
         navMain = (NavigationView) findViewById(R.id.navMain);
 

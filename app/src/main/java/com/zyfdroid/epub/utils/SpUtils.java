@@ -22,6 +22,9 @@ public class SpUtils{
         return sp.getInt("readingFontSize",15);
     }
 
+    public boolean getEinkMode(){return sp.getBoolean("eink",false);}
+    public void setEinkMode(boolean b){sp.edit().putBoolean("eink",b).apply();}
+
     public boolean getAllowNightMode(){
         return sp.getBoolean("nightmode",true);
     }

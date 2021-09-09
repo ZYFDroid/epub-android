@@ -52,4 +52,5 @@
     <string name="allownight">Turn page background into black when night</string>
     <string name="server">EPUBium Server</string>
     <string name="no_internet">Network not available</string>
+    <string name="eink">Eink Mode</string>
 </resources>

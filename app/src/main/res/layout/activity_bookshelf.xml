@@ -23,7 +23,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <androidx.drawerlayout.widget.DrawerLayout
+    <com.zyfdroid.epub.views.MyDrawerView
         android:layout_width="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/drwMain"
@@ -39,7 +39,7 @@
             app:menu="@menu/menu_main"
             android:id="@+id/navMain"/>
 
-    </androidx.drawerlayout.widget.DrawerLayout>
+    </com.zyfdroid.epub.views.MyDrawerView>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

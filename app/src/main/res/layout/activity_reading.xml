@@ -27,7 +27,7 @@
 
 
 
-    <androidx.drawerlayout.widget.DrawerLayout
+    <com.zyfdroid.epub.views.MyDrawerView
         android:layout_width="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/drwMain"
@@ -80,7 +80,7 @@
             </FrameLayout>
         </LinearLayout>
 
-    </androidx.drawerlayout.widget.DrawerLayout>
+    </com.zyfdroid.epub.views.MyDrawerView>
 
     <ProgressBar
         android:layout_width="match_parent"

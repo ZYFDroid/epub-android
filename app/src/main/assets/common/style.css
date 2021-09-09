@@ -341,8 +341,7 @@ body{
     height: 40px;
     width: 100%;
     background-position-y: center;
-    background-position-x: calc(100% - 44px);
-    background-image: url("/common/img/ic_list_go.png");
+    background-position-x: calc(100% - 4px);
     background-size: 24px;
     padding-left: 8px;
     background-repeat: no-repeat;
@@ -350,7 +349,17 @@ body{
     line-height: 40px;
     font-size: 13px;
     white-space: pre;
-    padding-right: 32px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.btngo{
+    padding: 6px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: white;
 }
 
 .savecard{

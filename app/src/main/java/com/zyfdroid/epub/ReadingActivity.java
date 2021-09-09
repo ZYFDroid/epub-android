@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -40,6 +41,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zyfdroid.epub.utils.DBUtils;
@@ -81,6 +83,10 @@ public class ReadingActivity extends AppCompatActivity {
 
     BookmarkAdapter bookmarkAdapter;
 
+
+
+
+
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
         if (menu != null) {
@@ -112,9 +118,24 @@ public class ReadingActivity extends AppCompatActivity {
         ;
         tocList.clear();
         setSupportActionBar((Toolbar) findViewById(R.id.titMain));
-        DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-        ActionBarDrawerToggle drwButton = new ActionBarDrawerToggle(this, drwMain, (Toolbar) findViewById(R.id.titMain), R.string.app_name, R.string.app_name);
-        drwMain.setDrawerListener(drwButton);
+        final DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+        ActionBarDrawerToggle drwButton = new ActionBarDrawerToggle(this,drwMain,(Toolbar) findViewById(R.id.titMain),R.string.app_name,R.string.app_name);
+        if(SpUtils.getInstance(this).getEinkMode()) {
+            ((Toolbar) findViewById(R.id.titMain)).setNavigationOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    if(drwMain.isDrawerOpen(GravityCompat.START)){
+                        drwMain.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                    }
+                    else{
+                        drwMain.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+                    }
+                }
+
+            });
+        }
+        drwMain.addDrawerListener(drwButton);
         drwButton.syncState();
         readingBook = JsonConvert.fromJson(getIntent().getStringExtra("book"), DBUtils.BookEntry.class);
         bookRootPath = new File(EpubUtils.cacheBookPath, readingBook.getUUID()).getAbsolutePath();
@@ -158,6 +179,7 @@ public class ReadingActivity extends AppCompatActivity {
         }
         setTitle(readingBook.getDisplayName());
         getSupportActionBar().setSubtitle(getString(R.string.load_loading));
+        hWnd.postDelayed(loadingLazyShower,200);
     }
 
     @Override
@@ -251,10 +273,22 @@ public class ReadingActivity extends AppCompatActivity {
         },500);
     }
 
+    private int loadingFlag = -1;
+
+    private Runnable loadingLazyShower = new Runnable() {
+        @Override
+        public void run() {
+            if(loadingFlag>0){loadingFlag--;}
+            findViewById(R.id.pbrLoading).setVisibility(loadingFlag == 0 ? View.VISIBLE : View.INVISIBLE);
+            hWnd.postDelayed(this,50);
+        }
+    };
+
 
     @Override
     protected void onDestroy() {
         bookView.destroy();
+        hWnd.removeCallbacks(loadingLazyShower);
         super.onDestroy();
     }
 
@@ -523,7 +557,7 @@ public class ReadingActivity extends AppCompatActivity {
         htmlCallbacks.put("SHOW_PROGRESS", new Action<String>() {
             @Override
             public void run(String arg) {
-                findViewById(R.id.pbrLoading).setVisibility(arg.equals("1") ? View.VISIBLE : View.INVISIBLE);
+                loadingFlag = arg.equals("1") ? 10 : -1;
             }
         });
 
