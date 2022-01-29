@@ -1,6 +1,7 @@
 package com.zyfdroid.epub.server;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -12,6 +13,7 @@ import com.zyfdroid.epub.R;
 import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.EpubUtils;
 import com.zyfdroid.epub.utils.SpUtils;
+import com.zyfdroid.epub.utils.TextUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -74,6 +76,17 @@ public class EPUBiumServer extends NanoHTTPD {
             }
             if(url.startsWith("/common/")){
                 return handleAssetResponse(url,"/common/","common/");
+            }
+            if(url.startsWith("/static/defaultFont.ttf")){
+                String font = SpUtils.getInstance(appContext).getCustomFont();
+                if(TextUtils.isEmpty(font)){
+                    return newFixedLengthResponse(Response.Status.NOT_FOUND,"text/html","404 Not Found");
+                }
+                FileInputStream fontStream = new FileInputStream(font);
+                return newFixedLengthResponse(Response.Status.OK,mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(font)),fontStream,fontStream.available());
+            }
+            if(url.startsWith("/static/")){
+                return handleAssetResponse(url,"/static/","epubjs/static/");
             }
         }catch (Exception ex){
             return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,"text/html",ex.toString());
