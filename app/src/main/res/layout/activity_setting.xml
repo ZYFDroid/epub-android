@@ -37,5 +37,14 @@
         android:layout_height="wrap_content"
         android:text="@string/clear_cache"
         android:onClick="clearCache"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/where_the_font_at"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fontselect"
+        android:onClick="chooseFont"/>
 
 </LinearLayout>

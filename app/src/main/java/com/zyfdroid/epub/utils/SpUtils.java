@@ -3,6 +3,9 @@ package com.zyfdroid.epub.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
+
+import java.io.File;
 
 public class SpUtils{
     private SharedPreferences sp;
@@ -45,4 +48,17 @@ public class SpUtils{
         return firstRun;
     }
 
+    public String getCustomFont(){
+        String str = sp.getString("font","");
+        if(!TextUtils.isEmpty(str)){
+            if(new File(str).exists()){
+                return str;
+            }
+        }
+        return "";
+    }
+
+    public void setCustomFont(String fontpath){
+        sp.edit().putString("font", Environment.getExternalStorageDirectory().getAbsolutePath()+"/Books/.font/"+fontpath).apply();
+    }
 }

@@ -79,6 +79,8 @@ public class ReadingActivity extends AppCompatActivity {
     String dummyScriptUrl = "http://epub.zyfdroid.com/api/reportmode.js";
     String homeUrl = "http://epub.zyfdroid.com/static/index.html";
 
+    String fontUrl = "http://epub.zyfdroid.com/static/defaultFont.ttf";
+
     TabLayout drawerTab;
 
     BookSpine[] spines = new BookSpine[0];
@@ -448,7 +450,16 @@ public class ReadingActivity extends AppCompatActivity {
                         resp.put("Access-Control-Max-Age", "3600");
                         resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
                         resp.put("Access-Control-Allow-Credentials", "true");
-                        WebResourceResponse wr = new WebResourceResponse(MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl("roboto.ttf")), "UTF-8", 200, "OK", resp, assetManager.open("roboto.ttf"));
+                        InputStream fontInputStream = null;
+                        String customFont = SpUtils.getInstance(ReadingActivity.this).getCustomFont();
+                        if(TextUtils.isEmpty(customFont)){
+                            fontInputStream = assetManager.open("roboto.ttf");
+                        }
+                        else{
+                            fontInputStream = new FileInputStream(customFont);
+                        }
+
+                        WebResourceResponse wr = new WebResourceResponse(MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl("roboto.ttf")), "UTF-8", 200, "OK", resp, fontInputStream);
 
                         return wr;
                     }

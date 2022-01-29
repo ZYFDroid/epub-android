@@ -2,7 +2,7 @@
     <string name="app_name">EPUBium</string>
     <string name="epubium_bookshelf">EPUBium - Bookshelf</string>
     <string name="bookshelf_nobook">You do not have any books in library\nPut your books in /sdcard/Books/\nand press the scan button</string>
-    <string name="settings_open_external">Open book with external reader app</string>
+    <string name="settings_open_external">Open book in external reader app</string>
     <string name="clear_cache">Clear cache</string>
     <string name="save">SAVE</string>
     <string name="load">LOAD</string>
@@ -33,7 +33,7 @@
     <string name="bookshelf_rescan_all">Rescan all</string>
     <string name="bookshelf_rescan_message">Do full scan only if the book is displayed incorrectly in library. Will take a long time. \n\nContinue?</string>
     <string name="open_no_external">No external reader is installed.</string>
-    <string name="setting_clean_cache_message">In the next step, Click \'Storage\' and then click \'clear cache\'. Don\'t click \'Clear data\'. \n It is not wise to clean cache frequently</string>
+    <string name="setting_clean_cache_message">In the next step, Click \'Storage\' and then click \'clear cache\'. Don\'t click \'Clear data\'. \n It is not wise to clean cache so frequently</string>
     <string name="tab_chapters">Chapters</string>
     <string name="tab_saves">Saves</string>
     <string name="load_empty_save">No save</string>
@@ -54,4 +54,9 @@
     <string name="no_internet">Network not available</string>
     <string name="eink">Eink Mode</string>
     <string name="requirerestart">Eink Mode require restart to take effect</string>
+    <string name="fontselect">Choose font</string>
+    <string name="where_the_font_at" >Put custom ttf fonts in \'.font\' folder under \'Books\' folder</string>
+    <string name="err_font_file">What did you do with .font folder</string>
+    <string name="err_no_font">No font was found</string>
+    <string name="default_font"><![CDATA[<System Default>]]></string>
 </resources>

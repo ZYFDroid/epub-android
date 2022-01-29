@@ -1,0 +1,8 @@
+@font-face{
+    font-family:'epub-custom';
+    src:url('/static/defaultFont.ttf') format('truetype');
+}
+
+*{
+    font-family: 'epub-custom';
+}

@@ -207,7 +207,7 @@
                             "color": nightmode ? "white" : "black",
                             "font-weight": "100",
                             "text-shadow": "0px 0.2px 0.5px #ddd,0.2px 0.2px 0.5px #ddd,0.2px 0px 0.5px #ddd,0.2px -0.2px 0.5px #ddd,0px -0.2px 0.5px #ddd,-0.2px -0.2px 0.5px #ddd,-0.2px 0px 0.5px #ddd,-0.2px 0.2px 0px white;"
-                    },
+                        },
                         "a:link":{
                             "color": "#07f"
                         }
@@ -216,6 +216,8 @@
         }
 
         mainDoc.addStylesheetRules(rules);
+        mainDoc.addStylesheet("/static/custfont.css");
+
         //标准100%
         var maxWidth = document.getElementById("epubsub").clientWidth;
         //页面宽度

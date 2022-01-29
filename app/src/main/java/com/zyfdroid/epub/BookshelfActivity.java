@@ -106,7 +106,7 @@ public class BookshelfActivity extends AppCompatActivity {
                 if(SpUtils.getInstance(BookshelfActivity.this).getEinkMode()){
                     EinkRecyclerView rv = (EinkRecyclerView) findViewById(R.id.listBooks);
                     rv.startEinkMode(LinearLayout.HORIZONTAL,rv.getWidth());
-                    navMain.startEinkMode(LinearLayout.VERTICAL,navMain.getHeight());
+                    navMain.startEinkMode(LinearLayout.VERTICAL, (int) ((float)navMain.getHeight() * 0.9f));
                     findViewById(R.id.einkDrawerOpener).setVisibility(View.VISIBLE);
                     findViewById(R.id.einkDrawerOpener).setOnTouchListener(new View.OnTouchListener() {
                         @Override
