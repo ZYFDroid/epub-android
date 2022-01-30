@@ -105,8 +105,12 @@
         reportMessage("SHOW_PROGRESS", "1");
 	    rootView = document.getElementById("epubsub");
         book = ePub("../book/" + url);
-        renderH = book.renderTo("epubsub",{ method: "continuous" });
+        renderH = book.renderTo("epubsub",{
+            method: "continuous",
+            stylesheet:"/static/custfont.css"
+        });
         renderH.themes.fontSize(fontsize);
+        renderH.themes.registerUrl("custfont","/static/custfont.css");
         renderH.display().then(() => { reportMessage("EPUB_BOOK_INIT_SUCCESS");
         reportMessage("SHOW_PROGRESS", "0");
                 reportLocationAsync(); });
@@ -216,7 +220,7 @@
         }
 
         mainDoc.addStylesheetRules(rules);
-        mainDoc.addStylesheet("/static/custfont.css");
+        // mainDoc.addStylesheet("/static/custfont.css");
 
         //标准100%
         var maxWidth = document.getElementById("epubsub").clientWidth;

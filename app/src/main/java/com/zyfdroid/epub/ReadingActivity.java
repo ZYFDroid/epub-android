@@ -53,6 +53,7 @@ import com.zyfdroid.epub.utils.TextUtils;
 import com.zyfdroid.epub.views.EinkRecyclerView;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -88,7 +89,7 @@ public class ReadingActivity extends AppCompatActivity {
 
     BookmarkAdapter bookmarkAdapter;
 
-
+    byte[] cachedFont = new byte[0];
 
 
 
@@ -255,6 +256,8 @@ public class ReadingActivity extends AppCompatActivity {
     };
 
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_read,menu);
@@ -362,6 +365,7 @@ public class ReadingActivity extends AppCompatActivity {
     protected void onDestroy() {
         bookView.destroy();
         hWnd.removeCallbacks(loadingLazyShower);
+        cachedFont = null;
         super.onDestroy();
     }
 
@@ -456,7 +460,7 @@ public class ReadingActivity extends AppCompatActivity {
                             fontInputStream = assetManager.open("roboto.ttf");
                         }
                         else{
-                            fontInputStream = new FileInputStream(customFont);
+                            fontInputStream = getCustomFontStream(customFont);
                         }
 
                         WebResourceResponse wr = new WebResourceResponse(MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl("roboto.ttf")), "UTF-8", 200, "OK", resp, fontInputStream);
@@ -541,6 +545,23 @@ public class ReadingActivity extends AppCompatActivity {
             }
         });
         bookView.loadUrl(homeUrl);
+    }
+
+    private InputStream getCustomFontStream(String customFont) throws IOException {
+        if(cachedFont!=null && cachedFont.length > 0){
+            return new ByteArrayInputStream(cachedFont);
+        }
+        ByteArrayOutputStream byteArrayOutputStream;
+        try (InputStream is = new FileInputStream(customFont)) {
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            int read = 0;
+            byte[] buffer = new byte[4096];
+            while ((read = is.read(buffer)) > 0) {
+                byteArrayOutputStream.write(buffer, 0, read);
+            }
+        }
+        cachedFont = byteArrayOutputStream.toByteArray();
+        return new ByteArrayInputStream(cachedFont);
     }
 
     String currentChapter = "";

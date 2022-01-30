@@ -41,6 +41,9 @@ public class EPUBiumServer extends NanoHTTPD {
     SpUtils spUtils;
     AssetManager asset;
     Gson gson;
+
+
+
     public EPUBiumServer(Context ctx) {
         super(2480);
         appContext = ctx;
