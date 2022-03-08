@@ -33,7 +33,7 @@
     <string name="bookshelf_rescan_all">全部重扫</string>
     <string name="bookshelf_rescan_message">只有在书架显示不正确的时候需要全部重扫，将会花一段时间。 \n\n是否继续?</string>
     <string name="open_no_external">没有安装别的阅读器。</string>
-    <string name="setting_clean_cache_message">在下一个界面, 点击 \'存储\' 选项然后点击 \'清除缓存\'.不要点 \'清除数据\'. \n 不建议三天两头清缓存</string>
+    <string name="setting_clean_cache_message">是否清除书籍缓存？ \n 不建议三天两头清缓存</string>
     <string name="tab_chapters">章节</string>
     <string name="tab_saves">存档</string>
     <string name="load_empty_save">存档是空的</string>
@@ -58,4 +58,10 @@
     <string name="err_font_file">不能读取.font目录</string>
     <string name="err_no_font">还没有自定义字体</string>
     <string name="default_font"><![CDATA[<系统默认>]]></string>
+    <string name="complete_books">已读完的书</string>
+    <string name="mark_as_complete">设置为已读完</string>
+    <string name="title_completed_books">寻访故友</string>
+    <string name="dlg_complete_msg">是否设置为已完成？\n设置为已完成的书籍将不再出现在书库列表中，但可以在侧边栏的 已读完书籍 中找到</string>
+    <string name="mark_as_not_completed">设置为未读完</string>
+    <string name="success">设置完成。</string>
 </resources>

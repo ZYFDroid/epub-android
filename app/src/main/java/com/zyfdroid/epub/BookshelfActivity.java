@@ -269,6 +269,16 @@ public class BookshelfActivity extends AppCompatActivity {
 
     FolderDrawerAdapter folderAdapter;
 
+    public void loadCompleteBooks(View v){
+        isAllBook = false;
+        setTitle(getString(R.string.title_completed_books));
+        loadBooksList(DBUtils.queryBooks("type=2 order by lastopen desc"));
+        DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+        if(drwMain.isDrawerOpen(GravityCompat.START)){
+            drwMain.closeDrawer(GravityCompat.START);
+        }
+    }
+
     public void loadMenuRange(DBUtils.BookEntry... strs){
         folderAdapter.data.clear();
         folderAdapter.data.add(new FolderViewData(0,null,0));
@@ -280,6 +290,9 @@ public class BookshelfActivity extends AppCompatActivity {
             fd.clicker = new FolderClicker(strs[i]);
             folderAdapter.data.add(fd);
         }
+
+        folderAdapter.data.add(new FolderViewData(1,getString(R.string.complete_books),0));
+        folderAdapter.data.add(new FolderViewData(2,getText(R.string.complete_books).toString(),R.drawable.ic_menu_folder){{clicker = BookshelfActivity.this::loadCompleteBooks;}});
         folderAdapter.data.add(new FolderViewData(1,getText(R.string.preference).toString(),0));
         folderAdapter.data.add(new FolderViewData(2,getText(R.string.server).toString(),R.drawable.ic_list_go){{
             clicker = new View.OnClickListener() {

@@ -49,7 +49,9 @@ public class DBUtils extends SQLiteOpenHelper {
         int curversion = oldVersion+1;
         while (curversion<=newVersion){
             if(curversion==1){
-                //type=0: this is a book; type=1: this is a folder/bookshelf, query sub uuid for more books. the Root uuid is 0;
+                // type=0: this is a book;
+                // type=1: this is a folder/bookshelf query sub uuid for more books. the Root uuid is 0;
+                // type=2: the book has complete reading.
                 db.execSQL("create table library(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,uuid text,type integer,parent_uuid text,display_name text,path text,lastopen bigint default 0)");
                 db.execSQL("create table bookmarks(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,bookid text,epubcfi text,slot integer default 0,name text,savetime bigint default 0)");
                 db.execSQL("insert into library(uuid,type,display_name,path) values(?,?,?,?)",new Object[]{"0",1,"图书馆",getBookRoot()});

@@ -111,6 +111,11 @@ public class ReadingActivity extends AppCompatActivity {
                     ColorStateList color = (ColorStateList.valueOf(getResources().getColor(R.color.textdaylight)));
                     MenuItemCompat.setIconTintList(mi, color);
                 }
+                if(mi.getItemId()==R.id.mnuComplete){
+                    if(readingBook.getType() == 2){
+                        mi.setTitle(R.string.mark_as_not_completed);
+                    }
+                }
             }
         }
 
@@ -326,6 +331,21 @@ public class ReadingActivity extends AppCompatActivity {
                     item.setIcon(R.drawable.ic_menu_bookmark_unlock);
                 }
                 break;
+            case R.id.mnuComplete:
+                if(readingBook.getType() == 0) {
+                    new AlertDialog.Builder(this).setTitle(R.string.mark_as_complete).setMessage(R.string.dlg_complete_msg).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            DBUtils.execSql("update library set type=2 where uuid=?", readingBook.getUUID());
+                            finish();
+                        }
+                    }).setNegativeButton(android.R.string.no, null).create().show();
+                }else if(readingBook.getType() == 2){
+                    readingBook.setType(0);
+                    DBUtils.execSql("update library set type=0 where uuid=?", readingBook.getUUID());
+                    snack(getString(R.string.success));
+                }
+                break;
             default:
                 Log.w("Unknown menu clicked: ","id="+item.getItemId());
                 Log.w("Unknown menu clicked: ","text="+item.getTitle());
@@ -363,6 +383,7 @@ public class ReadingActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        bookView.clearCache(false);
         bookView.destroy();
         hWnd.removeCallbacks(loadingLazyShower);
         cachedFont = null;
@@ -396,8 +417,9 @@ public class ReadingActivity extends AppCompatActivity {
         ws.setAllowFileAccessFromFileURLs(true);
         ws.setAllowUniversalAccessFromFileURLs(true);
         ws.setAppCacheEnabled(true);
+        ws.setAppCachePath(getCacheDir()+"/bvc");
         ws.setDatabaseEnabled(true);
-        ws.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        ws.setCacheMode(WebSettings.LOAD_DEFAULT);
         ws.setJavaScriptEnabled(true);
         ws.setUseWideViewPort(true);
         ws.setLoadWithOverviewMode(true);
@@ -452,6 +474,7 @@ public class ReadingActivity extends AppCompatActivity {
                         resp.put("Access-Control-Allow-Origin", "*");
                         resp.put("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
                         resp.put("Access-Control-Max-Age", "3600");
+                        resp.put("Cache-Control","max-age=114514");
                         resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
                         resp.put("Access-Control-Allow-Credentials", "true");
                         InputStream fontInputStream = null;
@@ -474,6 +497,7 @@ public class ReadingActivity extends AppCompatActivity {
                 resp.put("Access-Control-Allow-Origin", "*");
                 resp.put("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
                 resp.put("Access-Control-Max-Age", "3600");
+                resp.put("Cache-Control","max-age=114514");
                 resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
                 resp.put("Access-Control-Allow-Credentials", "true");
 
@@ -573,6 +597,8 @@ public class ReadingActivity extends AppCompatActivity {
     private String currentProgressCfi="";
 
     ArrayList<TocEntry> tocList = new ArrayList<>();
+
+
 
     public void initHtmlCallback() {
         htmlCallbacks.put("GET_SAVING", new Action<String>() {

@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.SpUtils;
 
 import java.io.File;
@@ -55,13 +56,15 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     public void clearCache(View view) {
-        new AlertDialog.Builder(this).setMessage(R.string.setting_clean_cache_message).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this).setMessage(R.string.setting_clean_cache_message).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-                gotoAppDetailIntent(SettingActivity.this);
+                File f = new File(getCacheDir(),"book");
+                delFileAndDir(f);
+                f.mkdirs();
+                Toast.makeText(SettingActivity.this, "清除成功。", Toast.LENGTH_SHORT).show();
             }
-        }).create().show();
+        }).setNegativeButton(android.R.string.no,null).create().show();
     }
 
     public static void gotoAppDetailIntent(Activity activity) {
@@ -97,7 +100,23 @@ public class SettingActivity extends AppCompatActivity {
                     SpUtils.getInstance(SettingActivity.this).setCustomFont("");
                 }
                 SpUtils.getInstance(SettingActivity.this).setCustomFont(options[which]);
+                //Clear font cache
+                delFileAndDir(new File(getCacheDir(),"bvc"));
             }
         }).setCancelable(true).create().show();
+    }
+
+    private void delFileAndDir(File file){
+        if(file.exists()&&file.isDirectory()){
+            File[] files = file.listFiles();
+            for(File f:files){
+                if(f.isFile()){
+                    f.delete();
+                }else {
+                    delFileAndDir(f);
+                }
+                f.delete();
+            }
+        }
     }
 }
