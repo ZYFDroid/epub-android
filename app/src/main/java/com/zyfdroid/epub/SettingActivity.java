@@ -13,11 +13,23 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.zyfdroid.epub.utils.CinematicProgressDialog;
 import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.SpUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.nio.Buffer;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -117,6 +129,80 @@ public class SettingActivity extends AppCompatActivity {
                 }
                 f.delete();
             }
+        }
+    }
+
+    public void exportComplete(View view) {
+        List<DBUtils.BookEntry> books = DBUtils.queryBooks("type=2");
+        try {
+            File f = new File(Environment.getExternalStorageDirectory(),"Books"+File.separator+getString(R.string.filename_complete_reading));
+            if(f.exists()){
+                f.delete();
+            }
+            PrintStream ps = new PrintStream(f);
+            for (DBUtils.BookEntry be : books) {
+                String filename = be.getPath();
+                String uniqueKey = "";
+                if(filename.contains("/")){
+                    uniqueKey  = filename.substring(filename.lastIndexOf('/')+1);
+                }
+                else if(filename.contains("\\")){
+                    uniqueKey  = filename.substring(filename.lastIndexOf('\\')+1);
+                }
+                else{
+                    uniqueKey = filename;
+                }
+                ps.println(uniqueKey);
+            }
+            ps.close();
+            Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error: "+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void importComplete(View view) {
+
+        try {
+            File f = new File(Environment.getExternalStorageDirectory(),"Books"+File.separator+getString(R.string.filename_complete_reading));
+            if(!f.exists()){
+                Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            InputStream is = new FileInputStream(f);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            HashSet<String> readedBooks = new HashSet<>();
+            String line;
+            while ((line = br.readLine()) != null){
+                if(!line.trim().isEmpty()){
+                    readedBooks.add(line);
+                }
+            }
+            br.close();
+            List<DBUtils.BookEntry> books = DBUtils.queryBooks("type=0");
+            for (DBUtils.BookEntry be : books) {
+                String filename = be.getPath();
+                String uniqueKey = "";
+                if(filename.contains("/")){
+                    uniqueKey  = filename.substring(filename.lastIndexOf('/')+1);
+                }
+                else if(filename.contains("\\")){
+                    uniqueKey  = filename.substring(filename.lastIndexOf('\\')+1);
+                }
+                else{
+                    uniqueKey = filename;
+                }
+                if(readedBooks.contains(uniqueKey)){
+                    DBUtils.execSql("update library set type=2 where uuid=?",be.getUUID());
+                }
+            }
+
+            Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error: "+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 }

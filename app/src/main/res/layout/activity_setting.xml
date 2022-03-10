@@ -47,4 +47,19 @@
         android:text="@string/fontselect"
         android:onClick="chooseFont"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/export_finish_list"
+            android:onClick="exportComplete"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/import_finish_list"
+            android:onClick="importComplete"/>
+    </LinearLayout>
 </LinearLayout>

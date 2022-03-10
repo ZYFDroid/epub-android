@@ -64,4 +64,8 @@
     <string name="dlg_complete_msg">是否设置为已完成？\n设置为已完成的书籍将不再出现在书库列表中，但可以在侧边栏的 已读完书籍 中找到</string>
     <string name="mark_as_not_completed">设置为未读完</string>
     <string name="success">设置完成。</string>
+
+    <string name="export_finish_list">导出已读完列表</string>
+    <string name="import_finish_list">导入已读完列表</string>
+    <string name="filename_complete_reading">已读完的书.txt</string>
 </resources>
