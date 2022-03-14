@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -154,7 +155,7 @@ public class BookScanner {
                     folderEntries.addAll(newPaths);
 
                     pdd.setProgress(3,4);
-                    List<DBUtils.BookEntry> bookInDb = DBUtils.queryBooks("type=?", String.valueOf(DBUtils.BookEntry.TYPE_BOOK));
+                    List<DBUtils.BookEntry> bookInDb = DBUtils.queryBooks("type=? or type=?", String.valueOf(DBUtils.BookEntry.TYPE_BOOK),String.valueOf(DBUtils.BookEntry.TYPE_BOOK_COMPLETE));
 
                     List<String> bookPathInDb = new ArrayList<String>();
                     for (DBUtils.BookEntry bk :
@@ -234,12 +235,21 @@ public class BookScanner {
             int cleanDB(){
                 int deleted = 0;
                 List<String> deletionUUIDs = new ArrayList<String>();
+                List<String> deletionIDs = new ArrayList<String>();
                 List<DBUtils.BookEntry> bookInDb = DBUtils.queryBooks("1=1");
+                List<DBUtils.BookEntry> completedBook = DBUtils.queryBooks("type=2");
+                HashSet<String> hs = new HashSet<String>();
+                for (DBUtils.BookEntry bk : completedBook){
+                    hs.add(bk.getPath());
+                }
                 for (DBUtils.BookEntry bk : bookInDb) {
                     if(bk.getType()== DBUtils.BookEntry.TYPE_BOOK) {
                         if (!new File(bk.getPath()).exists()){
                             deletionUUIDs.add(bk.getUUID());
                             deleted++;
+                        }
+                        if(bk.getType() == 0 && hs.contains(bk.path)){
+                            deletionIDs.add(bk.getUUID());
                         }
                     }
                 }
@@ -249,6 +259,11 @@ public class BookScanner {
                     if(imgCover.exists()){
                         imgCover.delete();
                     }
+                }
+                for (String delete : deletionIDs) {
+                    String sql = "delete from library where type = 0 and uuid = ?";
+                    DBUtils.execSql(sql,delete);
+                    deleted++;
                 }
                 return deleted;
             }

@@ -240,6 +240,7 @@ public class DBUtils extends SQLiteOpenHelper {
     public static class BookEntry{
         public static final String ROOT_UUID="0";
         public static final int TYPE_BOOK = 0;
+        public static final int TYPE_BOOK_COMPLETE = 2;
         public static final int TYPE_FOLDER = 1;
         int id=-1;
         String UUID;
