@@ -133,6 +133,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     public void exportComplete(View view) {
+        importComplete(view);
         List<DBUtils.BookEntry> books = DBUtils.queryBooks("type=2");
         try {
             File f = new File(Environment.getExternalStorageDirectory(),"Books"+File.separator+getString(R.string.filename_complete_reading));

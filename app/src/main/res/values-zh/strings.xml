@@ -65,7 +65,6 @@
     <string name="mark_as_not_completed">设置为未读完</string>
     <string name="success">设置完成。</string>
 
-    <string name="export_finish_list">导出已读完列表</string>
-    <string name="import_finish_list">导入已读完列表</string>
+    <string name="export_finish_list">同步已读完列表</string>
     <string name="filename_complete_reading">已读完的书.txt</string>
 </resources>

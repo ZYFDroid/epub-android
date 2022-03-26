@@ -65,7 +65,6 @@
     <string name="dlg_complete_msg">Are you sure to mark this book as completed? \nThe book will no longer be displayed in the library, it can only be access by the Completed Books in the drawer menu.</string>
     <string name="mark_as_not_completed">Mark as not completed</string>
     <string name="success">Success.</string>
-    <string name="export_finish_list">Export finish reading list</string>
-    <string name="import_finish_list">Import finish reading list</string>
+    <string name="export_finish_list">Sync finish reading list</string>
     <string name="filename_complete_reading">completed_books.txt</string>
 </resources>

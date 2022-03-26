@@ -294,10 +294,18 @@ public class ReadingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.mnuFontSizes:
-                new AlertDialog.Builder(this).setItems(new String[]{"100%", "125%", "150%", "175%", "200%"}, new DialogInterface.OnClickListener() {
+
+                //Base font size = 15;
+                final String[] fontsizes = new String[(200-50)/10 + 1];
+                for (int i = 0;i< fontsizes.length;i++){
+                    fontsizes[i] = ((i+5)*10) + "%";
+                }
+                new AlertDialog.Builder(this).setItems(fontsizes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        setFontSize(15 + 4 * which);
+                        String percentStr = fontsizes[which];
+                        float percent =Float.parseFloat(percentStr.substring(0,percentStr.length()-1));
+                        setFontSize((int)Math.round(15f * percent / 100));
                     }
                 }).create().show();
                 break;
