@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Base64;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -135,6 +136,7 @@ public class BookshelfActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams lp = navMain.getLayoutParams();
                 lp.width = drwMain.getWidth() * 2 / 3;
                 navMain.setLayoutParams(lp);
+                displayingEinkPage = findViewById(R.id.listBooks);
             }
         },301);
     }
@@ -149,11 +151,13 @@ public class BookshelfActivity extends AppCompatActivity {
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
             findViewById(R.id.einkDrawerCloser).setVisibility(View.VISIBLE);
+            displayingEinkPage = findViewById(R.id.navMain);
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
             findViewById(R.id.einkDrawerCloser).setVisibility(View.GONE);
+            displayingEinkPage = findViewById(R.id.listBooks);
         }
 
         @Override
@@ -361,6 +365,8 @@ public class BookshelfActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
@@ -369,6 +375,25 @@ public class BookshelfActivity extends AppCompatActivity {
         }else{
             super.onBackPressed();
         }
+    }
+    private EinkRecyclerView displayingEinkPage = null;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(SpUtils.getInstance(this).getEinkMode()){
+            if(displayingEinkPage != null){
+                if(keyCode==KeyEvent.KEYCODE_VOLUME_UP){
+                    displayingEinkPage.pageUp();
+                    return true;
+                }
+
+                if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN){
+                    displayingEinkPage.pageDown();
+                    return true;
+                }
+            }
+        }
+        return super.onKeyDown(keyCode,event);
     }
 
 

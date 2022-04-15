@@ -83,7 +83,24 @@ public class EinkRecyclerView extends RecyclerView {
             return super.onTouchEvent(e);
         }
     }
+    public void pageUp(){
+        scrollPage(1);
+    }
+    public void pageDown(){
+        scrollPage(-1);
+    }
 
+    private void scrollPage(int p){
+        int fx = 0;int fy = 0;
+        if(orientation == LinearLayout.VERTICAL){
+            fy =p > 0 ? -1 : 1;
+        }
+        if(orientation == LinearLayout.HORIZONTAL){
+            fx = p > 0 ? -1 : 1;
+        }
+        this.scrollBy(fx*scrollstep,fy*scrollstep);
+        moved = false;
+    }
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
         if(isEinkMode){

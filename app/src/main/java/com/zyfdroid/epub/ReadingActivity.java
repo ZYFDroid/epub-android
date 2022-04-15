@@ -167,7 +167,11 @@ public class ReadingActivity extends AppCompatActivity {
         drawerTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                findViewById((Integer) tab.getTag()).setVisibility(View.VISIBLE);
+                View v = findViewById((Integer) tab.getTag());
+                v.setVisibility(View.VISIBLE);
+                if(v instanceof EinkRecyclerView){
+                    displayingEinkPage = ((EinkRecyclerView) v);
+                }
             }
 
             @Override
@@ -178,8 +182,11 @@ public class ReadingActivity extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                findViewById((Integer) tab.getTag()).setVisibility(View.VISIBLE);
-
+                View v = findViewById((Integer) tab.getTag());
+                v.setVisibility(View.VISIBLE);
+                if(v instanceof EinkRecyclerView){
+                    displayingEinkPage = ((EinkRecyclerView) v);
+                }
             }
         });
         File extractFlat = new File(bookRootPath, EpubUtils.FLAG_EXTRACTED);
@@ -247,11 +254,18 @@ public class ReadingActivity extends AppCompatActivity {
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
             findViewById(R.id.einkDrawerCloser).setVisibility(View.VISIBLE);
+            if(findViewById(R.id.listChapters).getVisibility() == View.VISIBLE){
+                displayingEinkPage = findViewById(R.id.listChapters);
+            }
+            if(findViewById(R.id.listBookmarks).getVisibility() == View.VISIBLE){
+                displayingEinkPage = findViewById(R.id.listBookmarks);
+            }
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
             findViewById(R.id.einkDrawerCloser).setVisibility(View.GONE);
+            displayingEinkPage = null;
         }
 
         @Override
@@ -271,12 +285,29 @@ public class ReadingActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    private EinkRecyclerView displayingEinkPage = null;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+
+
         if(isDrawerOpen()){
+            if(SpUtils.getInstance(this).getEinkMode()){
+                if(displayingEinkPage != null){
+                    if(keyCode==KeyEvent.KEYCODE_VOLUME_UP){
+                        displayingEinkPage.pageUp();
+                        return true;
+                    }
+
+                    if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN){
+                        displayingEinkPage.pageDown();
+                        return true;
+                    }
+                }
+            }
             return super.onKeyDown(keyCode,event);
         }
-
 
         if(keyCode==KeyEvent.KEYCODE_VOLUME_UP){
             evaluteJavascriptFunction("prev");
