@@ -67,4 +67,5 @@
 
     <string name="export_finish_list">同步已读完列表</string>
     <string name="filename_complete_reading">已读完的书.txt</string>
+    <string name="fin">已读完</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -12,29 +13,57 @@
     app:cardBackgroundColor="@color/book_card_bg"
     app:cardElevation="3dp"
     android:id="@+id/crdBook"
+    tools:layout_width="80dp"
+    tools:layout_height="160dp"
     app:contentPadding="2dp"
     app:cardCornerRadius="5dp"
     app:cardMaxElevation="5dp">
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:background="@color/book_card_bg"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/imgCover"
-            android:scaleType="fitCenter"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/txtTitle"
-            android:textSize="13sp"
-            android:lines="2"/>
 
-    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="@color/book_card_bg"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgCover"
+                tools:src="@drawable/bg_drawer_head"
+                tools:scaleType="fitXY"
+                android:scaleType="fitCenter"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtTitle"
+                android:textSize="13sp"
+                android:lines="2"
+                tools:text="TestFolder"/>
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/badgeFin"
+            android:layout_width="90dp"
+            android:layout_height="18dp"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:background="#f00"
+            android:text="@string/fin"
+            android:layout_gravity="right|top"
+            android:rotation="45"
+            android:translationX="25dp"
+            android:translationY="10dp"
+            />
+
+    </FrameLayout>
+
 </androidx.cardview.widget.CardView>
 </LinearLayout>

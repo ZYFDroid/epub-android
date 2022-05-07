@@ -170,8 +170,7 @@ public class BookshelfActivity extends AppCompatActivity {
         setTitle(R.string.all_books);
         isAllBook = true;
         loadMenuRange(DBUtils.queryFoldersNotEmpty().toArray(new DBUtils.BookEntry[0]));
-        loadBooksList(DBUtils.queryBooks("type=0 order by lastopen desc"));
-
+        loadBooksList(DBUtils.queryBooks("type=0 or type = 2 order by type asc,lastopen desc"));
     }
 
     @Override
@@ -216,12 +215,12 @@ public class BookshelfActivity extends AppCompatActivity {
 
     public void doSearching(String text){
         if(isAllBook){
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("type=0 and display_name like ?  order by lastopen desc","%"+text+"%");
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("type=0 or type=2 and display_name like ?  order by lastopen desc","%"+text+"%");
             loadBooksList(lsResult);
         }
         else{
 
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 and display_name like ?  order by lastopen desc",currentDirectory.getUUID(),"%"+text+"%");
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and (type=0 or type=2) and display_name like ?  order by lastopen desc",currentDirectory.getUUID(),"%"+text+"%");
             loadBooksList(lsResult);
         }
     }
@@ -350,7 +349,7 @@ public class BookshelfActivity extends AppCompatActivity {
             if(drwMain.isDrawerOpen(GravityCompat.START)){
                 drwMain.closeDrawer(GravityCompat.START);
             }
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and type=0 order by lastopen desc",be.getUUID());
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and (type=0 or type=2) order by type asc, lastopen desc",be.getUUID());
             setTitle(be.getDisplayName());
             loadBooksList(lsResult);
             isAllBook = false;currentDirectory = be;
@@ -452,7 +451,14 @@ public class BookshelfActivity extends AppCompatActivity {
             mCoverLoader.load(Uri.parse("epubentry://"+Base64.encodeToString(JsonConvert.toJson(bk).getBytes(),Base64.URL_SAFE))).noFade().into(holder.bookCover);
             holder.crdBook.setClickable(true);
             holder.crdBook.setOnTouchListener(new BookClicker(bk));
-
+            if(bk.getType()==2){
+                holder.badgeFin.setVisibility(View.VISIBLE);
+                holder.bookCover.setAlpha(0.3f);
+            }
+            else{
+                holder.badgeFin.setVisibility(View.INVISIBLE);
+                holder.bookCover.setAlpha(1f);
+            }
         }
         @Override
         public int getItemCount() {
@@ -464,12 +470,14 @@ public class BookshelfActivity extends AppCompatActivity {
             ImageView bookCover;
             TextView bookName;
             CardView crdBook;
+            TextView badgeFin;
             public BookAdapterViewHolder(View itemView) {
                 super(itemView);
                 rootView = (LinearLayout) itemView;
                 bookCover = rootView.findViewById(R.id.imgCover);
                 bookName = rootView.findViewById(R.id.txtTitle);
                 crdBook = rootView.findViewById(R.id.crdBook);
+                badgeFin = rootView.findViewById(R.id.badgeFin);
             }
         }
          class BookClicker implements View.OnTouchListener{

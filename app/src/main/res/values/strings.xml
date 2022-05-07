@@ -67,4 +67,5 @@
     <string name="success">Success.</string>
     <string name="export_finish_list">Sync finish reading list</string>
     <string name="filename_complete_reading">completed_books.txt</string>
+    <string name="fin">FIN</string>
 </resources>
