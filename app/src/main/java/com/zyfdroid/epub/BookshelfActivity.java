@@ -170,7 +170,40 @@ public class BookshelfActivity extends AppCompatActivity {
         setTitle(R.string.all_books);
         isAllBook = true;
         loadMenuRange(DBUtils.queryFoldersNotEmpty().toArray(new DBUtils.BookEntry[0]));
-        loadBooksList(DBUtils.queryBooks("type=0 or type = 2 order by type asc,lastopen desc"));
+
+
+        loadBooksList(getRecommandBook(null));
+    }
+
+    private List<DBUtils.BookEntry> getRecommandBook(String query,String... param){
+        String sql = query == null ? "" : query;
+        if(sql.length() > 0){
+            sql = sql+" and ";
+        }
+        List<DBUtils.BookEntry> notFinishedRead = DBUtils.queryBooks(sql+" type=0 order by lastopen desc",param);
+        List<DBUtils.BookEntry> finishedRead = DBUtils.queryBooks(sql+" type = 2 order by lastopen desc",param);
+        List<DBUtils.BookEntry> outList = new ArrayList<>();
+
+        for (int i = 0; i < 6; i++) {
+            if(notFinishedRead.size() > 0) {
+                outList.add(notFinishedRead.remove(0));
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if(notFinishedRead.size() > 0){
+                if(finishedRead.size()>0){
+                    if(finishedRead.get(0).getLastOpenTime() >= notFinishedRead.get(0).getLastOpenTime()){
+                        outList.add(finishedRead.remove(0));
+                    }
+                    else{
+                        outList.add(notFinishedRead.remove(0));
+                    }
+                }
+            }
+        }
+        outList.addAll(notFinishedRead);
+        outList.addAll(finishedRead);
+        return outList;
     }
 
     @Override
@@ -349,7 +382,7 @@ public class BookshelfActivity extends AppCompatActivity {
             if(drwMain.isDrawerOpen(GravityCompat.START)){
                 drwMain.closeDrawer(GravityCompat.START);
             }
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("parent_uuid=? and (type=0 or type=2) order by type asc, lastopen desc",be.getUUID());
+            List<DBUtils.BookEntry> lsResult = getRecommandBook("parent_uuid=? ",be.getUUID());
             setTitle(be.getDisplayName());
             loadBooksList(lsResult);
             isAllBook = false;currentDirectory = be;
