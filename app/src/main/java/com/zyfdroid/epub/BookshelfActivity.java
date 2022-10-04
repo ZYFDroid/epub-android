@@ -137,6 +137,7 @@ public class BookshelfActivity extends AppCompatActivity {
                 lp.width = drwMain.getWidth() * 2 / 3;
                 navMain.setLayoutParams(lp);
                 displayingEinkPage = findViewById(R.id.listBooks);
+                drwMain.closeDrawer(GravityCompat.START);
             }
         },301);
     }
@@ -248,7 +249,7 @@ public class BookshelfActivity extends AppCompatActivity {
 
     public void doSearching(String text){
         if(isAllBook){
-            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("type=0 or type=2 and display_name like ?  order by lastopen desc","%"+text+"%");
+            List<DBUtils.BookEntry> lsResult = DBUtils.queryBooks("(type=0 or type=2) and display_name like ?  order by lastopen desc","%"+text+"%");
             loadBooksList(lsResult);
         }
         else{
@@ -330,18 +331,18 @@ public class BookshelfActivity extends AppCompatActivity {
         folderAdapter.data.add(new FolderViewData(1,getString(R.string.complete_books),0));
         folderAdapter.data.add(new FolderViewData(2,getText(R.string.complete_books).toString(),R.drawable.ic_menu_folder){{clicker = BookshelfActivity.this::loadCompleteBooks;}});
         folderAdapter.data.add(new FolderViewData(1,getText(R.string.preference).toString(),0));
-        folderAdapter.data.add(new FolderViewData(2,getText(R.string.server).toString(),R.drawable.ic_list_go){{
-            clicker = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-                    if(drwMain.isDrawerOpen(GravityCompat.START)){
-                        drwMain.closeDrawer(GravityCompat.START);
-                    }
-                    startActivity(new Intent(BookshelfActivity.this,ServerActivity.class));
-                }
-            };
-        }});
+//        folderAdapter.data.add(new FolderViewData(2,getText(R.string.server).toString(),R.drawable.ic_list_go){{
+//            clicker = new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+//                    if(drwMain.isDrawerOpen(GravityCompat.START)){
+//                        drwMain.closeDrawer(GravityCompat.START);
+//                    }
+//                    startActivity(new Intent(BookshelfActivity.this,ServerActivity.class));
+//                }
+//            };
+//        }});
         folderAdapter.data.add(new FolderViewData(2,getText(R.string.settings).toString(),R.drawable.ic_menu_setting){{
             clicker = new View.OnClickListener() {
                 @Override

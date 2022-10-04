@@ -42,10 +42,40 @@ public class SpUtils{
         return sp.getBoolean("openWithExternalReader",false);
     }
 
+    public boolean getFullscreen(){
+        return sp.getBoolean("fullscreen",true);
+    }
+
+    public void setFullscreen(boolean fullscreen){
+        sp.edit().putBoolean("fullscreen",fullscreen).apply();
+    }
+
+    public boolean getShowStatusBar(){
+        return sp.getBoolean("showStatusBar",true);
+    }
+
+    public void setShowStatusBar(boolean b){
+        sp.edit().putBoolean("showStatusBar",b).apply();
+    }
+
     public boolean firstRun(){
         boolean firstRun = sp.getBoolean("firstRun",true);
         sp.edit().putBoolean("firstRun",false).apply();
         return firstRun;
+    }
+
+    public int getHintRemainCount(String key,int defaultCount){
+        String hintKey = "hint_"+key;
+        int result = sp.getInt(hintKey,defaultCount+1);
+        if(result > 0){
+            result--;
+            sp.edit().putInt(hintKey,result).apply();
+        }
+        return result;
+    }
+
+    public boolean shouldShowFullscreenHint(){
+        return getHintRemainCount("fullscreenhint",3) > 0;
     }
 
     public String getCustomFont(){
@@ -61,4 +91,6 @@ public class SpUtils{
     public void setCustomFont(String fontpath){
         sp.edit().putString("font", Environment.getExternalStorageDirectory().getAbsolutePath()+"/Books/.font/"+fontpath).apply();
     }
+
+
 }

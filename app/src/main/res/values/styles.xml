@@ -10,13 +10,15 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.Read" parent="AppTheme">
+        <item name="colorPrimaryDark">@android:color/black</item>
+    </style>
+
     <style name="AppTheme.DefaultActionBar" parent="Theme.AppCompat.DayNight">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="titleTextColor">#fff</item>
-
-
     </style>
 
     <style name="AppTheme.Splash" parent="Theme.AppCompat.DayNight.NoActionBar">
@@ -38,15 +40,10 @@
         <item name="android:windowBackground">@null</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <item name="android:foregroundTint">#fff</item>
 
-    </style>
-
-
-    <style name="AppTheme.PopupOverlay" parent="Theme.AppCompat.DayNight" >
-        <item name="iconTint">@color/textdaylight</item>
     </style>
 
 

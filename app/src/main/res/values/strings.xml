@@ -68,4 +68,7 @@
     <string name="export_finish_list">Sync finish reading list</string>
     <string name="filename_complete_reading">completed_books.txt</string>
     <string name="fin">FIN</string>
+    <string name="fullscreen_hint">Double click center or slide from left to show menu</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="show_bottom_status_bar">Show bottom status bar</string>
 </resources>

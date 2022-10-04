@@ -68,4 +68,10 @@
     <string name="export_finish_list">同步已读完列表</string>
     <string name="filename_complete_reading">已读完的书.txt</string>
     <string name="fin">已读完</string>
+
+    <string name="fullscreen_hint">双击屏幕中央或从左侧滑动打开菜单</string>
+
+
+    <string name="fullscreen">全屏阅读</string>
+    <string name="show_bottom_status_bar">显示底部信息</string>
 </resources>

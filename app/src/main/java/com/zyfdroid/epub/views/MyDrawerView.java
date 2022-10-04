@@ -1,6 +1,7 @@
 package com.zyfdroid.epub.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -28,7 +29,9 @@ public class MyDrawerView extends DrawerLayout {
     void init(){
         noAnim = SpUtils.getInstance(getContext()).getEinkMode();
         if(noAnim){
-           addDrawerListener(new DrawerListener() {
+            setScrimColor(Color.TRANSPARENT);
+            setDrawerElevation(3);
+            addDrawerListener(new DrawerListener() {
                @Override
                public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
                    if(!MyDrawerView.this.isDrawerOpen(GravityCompat.START)){

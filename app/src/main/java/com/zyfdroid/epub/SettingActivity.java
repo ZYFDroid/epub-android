@@ -36,6 +36,8 @@ public class SettingActivity extends AppCompatActivity {
     CheckBox chkOpenExternal;
     CheckBox chkAllowNight;
     CheckBox chkEink;
+    CheckBox chkFullscreen;
+    CheckBox chkShowStatusBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,9 +46,14 @@ public class SettingActivity extends AppCompatActivity {
         chkOpenExternal.setChecked(SpUtils.getInstance(this).shouldOpenWithExternalReader());
         chkAllowNight = findViewById(R.id.chkAllowNight);
         chkAllowNight.setChecked(SpUtils.getInstance(this).getAllowNightMode());
-
         chkEink = findViewById(R.id.chkEink);
         chkEink.setChecked(SpUtils.getInstance(this).getEinkMode());
+        chkFullscreen = findViewById(R.id.chkFullscreen);
+        chkShowStatusBar = findViewById(R.id.chkShowStatusBar);
+
+        chkFullscreen.setChecked(SpUtils.getInstance(this).getFullscreen());
+        chkShowStatusBar.setChecked(SpUtils.getInstance(this).getShowStatusBar());
+
         chkOpenExternal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -63,6 +70,20 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.getInstance(SettingActivity.this).setEinkMode(isChecked);
+            }
+        });
+
+        chkFullscreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.getInstance(SettingActivity.this).setFullscreen(isChecked);
+            }
+        });
+
+        chkShowStatusBar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SpUtils.getInstance(SettingActivity.this).setShowStatusBar(isChecked);
             }
         });
     }

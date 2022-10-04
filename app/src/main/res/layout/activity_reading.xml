@@ -10,15 +10,16 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/readingTitleBar"
+        android:layout_height="@dimen/readActionbarHeight"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/titMain"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/readActionbarHeight"
             android:background="?attr/colorPrimary"
-
+            android:gravity="center_vertical"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             />
 
@@ -29,7 +30,7 @@
 
     <com.zyfdroid.epub.views.MyDrawerView
         android:layout_width="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="0dp"
         android:id="@+id/drwMain"
         tools:openDrawer="start"
         android:layout_height="match_parent">
@@ -50,6 +51,47 @@
                android:id="@+id/einkDrawerOpener"
                android:clickable="true"
                android:visibility="gone"/>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_gravity="bottom"
+               android:paddingLeft="10dp"
+               android:id="@+id/tblStatusBar"
+               android:paddingRight="10dp"
+               android:orientation="horizontal"
+               android:layout_height="wrap_content">
+
+               <TextView
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:textSize="@dimen/readStatusBarText"
+                   android:textColor="#777"
+                   android:layout_weight="1"
+                   android:id="@+id/txtChapterInfo2"
+                   android:text="@string/load_loading">
+
+               </TextView>
+
+               <LinearLayout
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/tblStatusBarInfo"
+                   android:orientation="horizontal">
+                   <TextClock
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textSize="@dimen/readStatusBarText"
+                       android:textColor="#777"
+                       android:layout_marginEnd="8dp"/>
+                   <com.zyfdroid.epub.views.BatteryView
+                       android:layout_width="wrap_content"
+                       android:textColor="#777"
+                       android:layout_height="wrap_content"
+                       android:textSize="@dimen/readStatusBarText"/>
+               </LinearLayout>
+
+
+
+           </LinearLayout>
        </FrameLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,6 +99,7 @@
             android:background="@color/whitebg"
             android:orientation="vertical"
             android:id="@+id/drwLeft"
+            android:paddingTop="@dimen/readActionbarHeight"
             android:layout_gravity="start">
 
             <com.google.android.material.tabs.TabLayout
@@ -91,7 +134,6 @@
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:id="@+id/pbrLoading"
-        android:layout_marginTop="?attr/actionBarSize"
         android:indeterminate="true"
         style="?android:attr/progressBarStyleHorizontal"/>
 

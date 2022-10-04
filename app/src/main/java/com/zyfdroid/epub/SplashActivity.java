@@ -1,6 +1,8 @@
 package com.zyfdroid.epub;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -8,6 +10,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,6 +68,34 @@ public class SplashActivity extends AppCompatActivity {
         if(hasStorage()) {
             jump();
         }else{
+            showPrivacyDialog();
+        }
+    }
+
+    public void showPrivacyDialog(){
+        if(getString(R.string.about_file_name).contains("zh")){
+            new AlertDialog.Builder(this).setTitle("隐私协议与权限说明").setMessage("隐私协议：" +
+                    "\n- 本软件不包含服务端，也没有内置任何第三方服务，不会上传任何信息。" +
+                    "\n权限说明：" +
+                    "\n- 读取内部存储：用于读取epub图书文件" +
+                    "\n- 写入内部存储：用于同步已读完书单.txt").setCancelable(false)
+            .setPositiveButton("同意并继续", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    verifyStoragePermissions(SplashActivity.this);
+                    dialog.dismiss();
+                }
+            }).setNegativeButton("不同意", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    Toast.makeText(SplashActivity.this, "此应用不能在没有权限的情况下使用。当然，如果你想要回来，可以随时再点击应用图标打开。", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }).show();
+        }
+        else{
+
             verifyStoragePermissions(this);
         }
     }
@@ -92,14 +124,14 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         }
-        if(BuildConfig.DEBUG){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(new Intent(this, ServerService.class));
-            }
-            else{
-                startService(new Intent(this, ServerService.class));
-            }
-        }
+//        if(BuildConfig.DEBUG){
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                startForegroundService(new Intent(this, ServerService.class));
+//            }
+//            else{
+//                startService(new Intent(this, ServerService.class));
+//            }
+//        }
         hWnd.postDelayed(new Runnable() {
             @Override
             public void run() {

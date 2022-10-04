@@ -134,6 +134,7 @@
 				//console.log("clickingpos = "+clickingPos);
 				if (clickingPos==4) {
 					event.preventDefault();
+					reportMessage("CENTER_CLICKED");
 				} else if (clickingPos<4) {
 					event.preventDefault();
 					prev();
@@ -208,9 +209,9 @@
                             "background-color": "transparent"
                         },
                         "*": {
-                            "color": nightmode ? "white" : "black",
+                            "color": nightmode ? "#aaa" : "black",
                             "font-weight": "100",
-                            "text-shadow": "0px 0.2px 0.5px #ddd,0.2px 0.2px 0.5px #ddd,0.2px 0px 0.5px #ddd,0.2px -0.2px 0.5px #ddd,0px -0.2px 0.5px #ddd,-0.2px -0.2px 0.5px #ddd,-0.2px 0px 0.5px #ddd,-0.2px 0.2px 0px white;"
+                            "text-shadow": "0px 0.2px 0.5px #ddd,0.2px 0.2px 0.5px #777,0.2px 0px 0.5px #777,0.2px -0.2px 0.5px #777,0px -0.2px 0.5px #777,-0.2px -0.2px 0.5px #777,-0.2px 0px 0.5px #777,-0.2px 0.2px 0px #777;"
                         },
                         "a:link":{
                             "color": "#07f"

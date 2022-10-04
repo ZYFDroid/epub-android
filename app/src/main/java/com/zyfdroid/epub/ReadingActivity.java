@@ -31,6 +31,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.MimeTypeMap;
 import android.webkit.WebChromeClient;
@@ -121,12 +123,28 @@ public class ReadingActivity extends AppCompatActivity {
 
         return super.onMenuOpened(featureId, menu);
     }
+
+    float readActionBarSize = 0;
+    View readActionBar = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading);
         tocHashMap.clear();
-        ;
+        if(SpUtils.getInstance(this).getFullscreen()){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        }
+        else{
+            findViewById(R.id.tblStatusBarInfo).setVisibility(View.GONE);
+        }
+
+        findViewById(R.id.tblStatusBar).setVisibility(SpUtils.getInstance(this).getShowStatusBar() ? View.VISIBLE : View.GONE);
+
+
+        readActionBarSize = getResources().getDimensionPixelSize(R.dimen.readActionbarHeight);
+        readActionBar = findViewById(R.id.readingTitleBar);
+        readActionBar.setTranslationY(- readActionBarSize);
         tocList.clear();
         setSupportActionBar((Toolbar) findViewById(R.id.titMain));
         final DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
@@ -235,6 +253,9 @@ public class ReadingActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    else{
+                        drwMain.addDrawerListener(nonEinkGestureSwitcher);
+                    }
                     View drvLeft = findViewById(R.id.drwLeft);
                     ViewGroup.LayoutParams lp = drvLeft.getLayoutParams();
                     lp.width = drwMain.getWidth() *2 / 3;
@@ -242,8 +263,32 @@ public class ReadingActivity extends AppCompatActivity {
 
                 }
             }, 300);
-
+            if(SpUtils.getInstance(this).shouldShowFullscreenHint()){
+                Toast.makeText(this, R.string.fullscreen_hint,Toast.LENGTH_LONG).show();
+            }
     }
+
+    DrawerLayout.DrawerListener nonEinkGestureSwitcher = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+            readActionBar.setTranslationY(-(1-slideOffset) * readActionBarSize);
+        }
+
+        @Override
+        public void onDrawerOpened(@NonNull View drawerView) {
+            readActionBar.setTranslationY(0);
+        }
+
+        @Override
+        public void onDrawerClosed(@NonNull View drawerView) {
+            readActionBar.setTranslationY( - readActionBarSize);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
+    };
 
     DrawerLayout.DrawerListener einkGestureSwitcher = new DrawerLayout.DrawerListener() {
         @Override
@@ -260,12 +305,14 @@ public class ReadingActivity extends AppCompatActivity {
             if(findViewById(R.id.listBookmarks).getVisibility() == View.VISIBLE){
                 displayingEinkPage = findViewById(R.id.listBookmarks);
             }
+            readActionBar.setTranslationY(0);
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
             findViewById(R.id.einkDrawerCloser).setVisibility(View.GONE);
             displayingEinkPage = null;
+            readActionBar.setTranslationY( - readActionBarSize);
         }
 
         @Override
@@ -735,9 +782,21 @@ public class ReadingActivity extends AppCompatActivity {
                 DBUtils.autoSave(readingBook.getUUID(), arg, currentChapter + "\n" + currentPage);
             }
         });
+
+        htmlCallbacks.put("CENTER_CLICKED", new Action<String>() {
+            long lastTime = -1;
+            @Override
+            public void run(String arg) {
+                if(System.currentTimeMillis() - lastTime < 800){
+                    ((DrawerLayout)findViewById(R.id.drwMain)).openDrawer(GravityCompat.START);
+                }
+                lastTime = System.currentTimeMillis();
+            }
+        });
     }
     void displayPageInfo() {
         getSupportActionBar().setSubtitle("[" + currentPage + "] " + currentChapter);
+        ((TextView)findViewById(R.id.txtChapterInfo2)).setText(currentPage + " " + currentChapter);
     }
 
     public void evaluteJavascriptFunction(String functionName, Object... arguments) {
