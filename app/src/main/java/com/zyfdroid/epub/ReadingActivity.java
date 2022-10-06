@@ -137,6 +137,7 @@ public class ReadingActivity extends AppCompatActivity {
         }
         else{
             findViewById(R.id.tblStatusBarInfo).setVisibility(View.GONE);
+            getWindow().setStatusBarColor(Color.BLACK);
         }
 
         findViewById(R.id.tblStatusBar).setVisibility(SpUtils.getInstance(this).getShowStatusBar() ? View.VISIBLE : View.GONE);

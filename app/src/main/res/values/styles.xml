@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
@@ -8,10 +8,11 @@
         <item name="titleTextAppearance">@android:style/TextAppearance.Medium</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:navigationBarColor">@color/whitebg</item>
     </style>
 
     <style name="AppTheme.Read" parent="AppTheme">
-        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
     </style>
 
     <style name="AppTheme.DefaultActionBar" parent="Theme.AppCompat.DayNight">
@@ -23,7 +24,6 @@
 
     <style name="AppTheme.Splash" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_splash</item>
-        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="CinematicDialog" parent="Theme.AppCompat.Dialog">

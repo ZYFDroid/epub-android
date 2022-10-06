@@ -54,9 +54,10 @@
            <LinearLayout
                android:layout_width="match_parent"
                android:layout_gravity="bottom"
-               android:paddingLeft="10dp"
+               android:paddingLeft="9dp"
                android:id="@+id/tblStatusBar"
-               android:paddingRight="10dp"
+               android:paddingBottom="7dp"
+               android:paddingRight="9dp"
                android:orientation="horizontal"
                android:layout_height="wrap_content">
 
@@ -66,6 +67,8 @@
                    android:textSize="@dimen/readStatusBarText"
                    android:textColor="#777"
                    android:layout_weight="1"
+                   android:lines="1"
+                   android:ellipsize="end"
                    android:id="@+id/txtChapterInfo2"
                    android:text="@string/load_loading">
 

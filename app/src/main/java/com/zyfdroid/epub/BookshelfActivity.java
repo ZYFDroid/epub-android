@@ -38,7 +38,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.picasso.Downloader;
 import com.squareup.picasso.Picasso;
-import com.zyfdroid.epub.server.ServerActivity;
 import com.zyfdroid.epub.utils.BookScanner;
 import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.EpubUtils;
