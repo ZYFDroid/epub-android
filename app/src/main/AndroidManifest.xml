@@ -14,17 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".server.ServerService"
-            android:enabled="true"
-            android:label="@string/server"
-            android:exported="true" />
+<!--        <service-->
+<!--            android:name=".server.ServerService"-->
+<!--            android:enabled="true"-->
+<!--            android:label="@string/server"-->
+<!--            android:exported="true" />-->
 
-        <activity android:name=".server.ServerActivity"
-            android:label="@string/server"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.DefaultActionBar"/>
+<!--        <activity android:name=".server.ServerActivity"-->
+<!--            android:label="@string/server"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:theme="@style/AppTheme.DefaultActionBar"/>-->
         <activity
             android:name=".AboutActivity"
             android:label="@string/about"
@@ -54,6 +54,7 @@
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Read"
             android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

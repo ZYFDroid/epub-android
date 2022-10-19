@@ -40,7 +40,10 @@
         android:gravity="center_vertical"
         android:id="@+id/chkFullscreen"
         />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fullscreen_mode_is_only_suggested_to_use_on_eink_device"/>
     <CheckBox
         android:layout_width="match_parent"
         android:layout_height="50dp"

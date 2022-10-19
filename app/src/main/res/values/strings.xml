@@ -71,4 +71,5 @@
     <string name="fullscreen_hint">Double click center or slide from left to show menu</string>
     <string name="fullscreen">Fullscreen</string>
     <string name="show_bottom_status_bar">Show bottom status bar</string>
+    <string name="fullscreen_mode_is_only_suggested_to_use_on_eink_device">Fullscreen mode is only suggested to use on Eink device.</string>
 </resources>

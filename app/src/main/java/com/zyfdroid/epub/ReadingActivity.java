@@ -50,8 +50,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.zyfdroid.epub.utils.DBUtils;
 import com.zyfdroid.epub.utils.EpubUtils;
+import com.zyfdroid.epub.utils.ScreenUtils;
 import com.zyfdroid.epub.utils.SpUtils;
 import com.zyfdroid.epub.utils.TextUtils;
+import com.zyfdroid.epub.utils.ViewUtils;
 import com.zyfdroid.epub.views.EinkRecyclerView;
 
 import java.io.ByteArrayInputStream;
@@ -130,16 +132,11 @@ public class ReadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading);
+        ScreenUtils.adaptScreens(this);
+        if(!SpUtils.getInstance(this).getFullscreen()){
+            findViewById(R.id.readingContainer).setPadding(0,0,0,ViewUtils.dip2px(this,16));
+        }
         tocHashMap.clear();
-        if(SpUtils.getInstance(this).getFullscreen()){
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        }
-        else{
-            findViewById(R.id.tblStatusBarInfo).setVisibility(View.GONE);
-            getWindow().setStatusBarColor(Color.BLACK);
-        }
-
         findViewById(R.id.tblStatusBar).setVisibility(SpUtils.getInstance(this).getShowStatusBar() ? View.VISIBLE : View.GONE);
 
 
