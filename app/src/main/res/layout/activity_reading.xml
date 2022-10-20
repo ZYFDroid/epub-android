@@ -5,26 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/readingRootView"
+    android:background="@color/whitebg"
     tools:context="com.zyfdroid.epub.ReadingActivity">
 
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:id="@+id/readingTitleBar"
-        android:layout_height="@dimen/readActionbarHeight"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/titMain"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/readActionbarHeight"
-            android:background="?attr/colorPrimary"
-            android:gravity="center_vertical"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            />
-
-
-    </com.google.android.material.appbar.AppBarLayout>
 
 
 
@@ -133,6 +117,23 @@
         </LinearLayout>
 
     </com.zyfdroid.epub.views.MyDrawerView>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:id="@+id/readingTitleBar"
+        android:layout_height="@dimen/readActionbarHeight"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/titMain"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/readActionbarHeight"
+            android:background="?attr/colorPrimary"
+            android:gravity="center_vertical"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ProgressBar
         android:layout_width="match_parent"

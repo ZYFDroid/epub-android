@@ -134,7 +134,8 @@ public class ReadingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reading);
         ScreenUtils.adaptScreens(this);
         if(!SpUtils.getInstance(this).getFullscreen()){
-            findViewById(R.id.readingContainer).setPadding(0,0,0,ViewUtils.dip2px(this,16));
+
+            findViewById(R.id.readingContainer).setPadding(0,ViewUtils.dip2px(this,9),0,ViewUtils.dip2px(this,16));
         }
         tocHashMap.clear();
         findViewById(R.id.tblStatusBar).setVisibility(SpUtils.getInstance(this).getShowStatusBar() ? View.VISIBLE : View.GONE);
@@ -145,6 +146,7 @@ public class ReadingActivity extends AppCompatActivity {
         readActionBar.setTranslationY(- readActionBarSize);
         tocList.clear();
         setSupportActionBar((Toolbar) findViewById(R.id.titMain));
+        readActionBar.setElevation(0);
         final DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         ActionBarDrawerToggle drwButton = new ActionBarDrawerToggle(this,drwMain,(Toolbar) findViewById(R.id.titMain),R.string.app_name,R.string.app_name);
         if(SpUtils.getInstance(this).getEinkMode()) {
@@ -218,6 +220,7 @@ public class ReadingActivity extends AppCompatActivity {
             hWnd.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    readActionBar.setElevation(0);
                     if(SpUtils.getInstance(ReadingActivity.this).getEinkMode()) {
                         EinkRecyclerView rv = findViewById(R.id.listChapters);
                         EinkRecyclerView rv2 = findViewById(R.id.listBookmarks);
@@ -270,16 +273,19 @@ public class ReadingActivity extends AppCompatActivity {
         @Override
         public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
             readActionBar.setTranslationY(-(1-slideOffset) * readActionBarSize);
+            readActionBar.setElevation(15 * slideOffset);
         }
 
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
             readActionBar.setTranslationY(0);
+            readActionBar.setElevation(15);
         }
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
             readActionBar.setTranslationY( - readActionBarSize);
+            readActionBar.setElevation(0);
         }
 
         @Override

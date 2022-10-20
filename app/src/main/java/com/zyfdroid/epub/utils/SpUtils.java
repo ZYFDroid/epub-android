@@ -43,15 +43,15 @@ public class SpUtils{
     }
 
     public boolean getFullscreen(){
-        return sp.getBoolean("fullscreen2",true);
+        return sp.getBoolean("fullscreen3",false);
     }
 
     public void setFullscreen(boolean fullscreen){
-        sp.edit().putBoolean("fullscreen2",fullscreen).apply();
+        sp.edit().putBoolean("fullscreen3",fullscreen).apply();
     }
 
     public boolean getShowStatusBar(){
-        return sp.getBoolean("showStatusBar",false);
+        return sp.getBoolean("showStatusBar",true);
     }
 
     public void setShowStatusBar(boolean b){
