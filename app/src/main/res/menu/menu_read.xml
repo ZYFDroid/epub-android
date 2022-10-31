@@ -7,4 +7,6 @@
     <item android:id="@+id/mnuQuickLoad" android:title="@string/quick_load" android:icon="@drawable/ic_menu_load" />
     <item android:id="@+id/mnuReload" android:title="@string/reload" android:icon="@drawable/ic_menu_reload" />
     <item android:id="@+id/mnuComplete" android:title="@string/mark_as_complete" android:icon="@drawable/ic_menu_done" />
+    <item android:id="@+id/mnuAddToDesktop" android:title="@string/add_to_desktop" android:icon="@drawable/ic_menu_add_to_desktop_dark" />
+    <item android:id="@+id/mnuRemoveFromDesktop" android:title="@string/remove_from_desktop" android:icon="@drawable/ic_menu_add_to_desktop_dark" />
 </menu>

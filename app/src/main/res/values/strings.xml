@@ -2,12 +2,14 @@
     <string name="app_name">EPUBium</string>
     <string name="epubium_bookshelf">EPUBium - Bookshelf</string>
     <string name="bookshelf_nobook">You do not have any books in library\nPut your books in /sdcard/Books/\nand press the scan button</string>
+    <string name="desktop_nobook">No books on desktop yet.\nAdd books to desktop in reading screen.</string>
     <string name="settings_open_external">Open book in external reader app</string>
     <string name="clear_cache">Clear cache</string>
     <string name="save">SAVE</string>
     <string name="load">LOAD</string>
     <string name="all">All</string>
     <string name="all_books">All Books</string>
+    <string name="desktop">Desktop</string>
     <string name="folders">Folders</string>
     <string name="preference">Preference</string>
     <string name="settings">Settings</string>
@@ -72,4 +74,9 @@
     <string name="fullscreen">Fullscreen</string>
     <string name="show_bottom_status_bar">Show bottom status bar</string>
     <string name="fullscreen_mode_is_only_suggested_to_use_on_eink_device">Fullscreen mode is only suggested to use on Eink device.</string>
+    <string name="add_to_desktop">Add to Desktop</string>
+    <string name="remove_from_desktop">Remove from desktop</string>
+    <string name="menu_add_to_desktop">Which position will the book be put:</string>
+    <string name="tm_added_to_desktop">The book has been put on the desktop.</string>
+    <string name="tm_removed_from_desktop">The book has been removed from desktop.</string>
 </resources>

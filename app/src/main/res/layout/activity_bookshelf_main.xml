@@ -19,6 +19,13 @@
         android:id="@+id/txtScanHint"
         android:visibility="gone"
         android:text="@string/bookshelf_nobook"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:id="@+id/txtDesktopHint"
+        android:visibility="gone"
+        android:text="@string/desktop_nobook"/>
     <View
         android:layout_width="20dp"
         android:layout_height="match_parent"

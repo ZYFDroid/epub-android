@@ -28,4 +28,25 @@ public class TextUtils {
     public static boolean isEmpty(String string) {
         return android.text.TextUtils.isEmpty(string);
     }
+
+    public static String stripText(String in,int desiredLength){
+        StringBuilder sb = new StringBuilder();
+        int len = 0;
+        for (int i = 0; i < in.length(); i++) {
+            char chr = in.charAt(i);
+            if(chr > 256){
+                len += 2;
+            }
+            else{
+                len += 1;
+            }
+
+            sb.append(chr);
+            if(len > desiredLength){
+                break;
+            }
+        }
+        sb.append("...");
+        return sb.toString();
+    }
 }

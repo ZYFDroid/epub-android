@@ -77,4 +77,11 @@
 
 
     <string name="fullscreen_mode_is_only_suggested_to_use_on_eink_device">全屏模式仅适合在墨水屏设备上使用</string>
+    <string name="desktop">书桌</string>
+    <string name="desktop_nobook">书桌上没有书籍。在阅读界面可以添加到书桌</string>
+    <string name="add_to_desktop">添加到书桌</string>
+    <string name="remove_from_desktop">从书桌移除</string>
+    <string name="menu_add_to_desktop">要放到桌面的那个位置</string>
+    <string name="tm_added_to_desktop">已添加到桌面</string>
+    <string name="tm_removed_from_desktop">已从桌面移除</string>
 </resources>

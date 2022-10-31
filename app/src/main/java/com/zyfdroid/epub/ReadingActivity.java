@@ -146,6 +146,7 @@ public class ReadingActivity extends AppCompatActivity {
         readActionBar.setTranslationY(- readActionBarSize);
         tocList.clear();
         setSupportActionBar((Toolbar) findViewById(R.id.titMain));
+
         readActionBar.setElevation(0);
         final DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         ActionBarDrawerToggle drwButton = new ActionBarDrawerToggle(this,drwMain,(Toolbar) findViewById(R.id.titMain),R.string.app_name,R.string.app_name);
@@ -167,6 +168,9 @@ public class ReadingActivity extends AppCompatActivity {
         drwMain.addDrawerListener(drwButton);
         drwButton.syncState();
         readingBook = JsonConvert.fromJson(getIntent().getStringExtra("book"), DBUtils.BookEntry.class);
+
+
+
         bookRootPath = new File(EpubUtils.cacheBookPath, readingBook.getUUID()).getAbsolutePath();
         drawerTab = findViewById(R.id.tabMain);
         bookView = findViewById(R.id.webEpub);
@@ -338,11 +342,22 @@ public class ReadingActivity extends AppCompatActivity {
 
     private EinkRecyclerView displayingEinkPage = null;
 
+
+    private boolean keyAlreadyDown = false;
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        keyAlreadyDown = false;
+        return super.onKeyUp(keyCode, event);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-
-
+        if(keyAlreadyDown){
+            return true;
+        }
+        keyAlreadyDown = true;
         if(isDrawerOpen()){
             if(SpUtils.getInstance(this).getEinkMode()){
                 if(displayingEinkPage != null){
@@ -435,6 +450,38 @@ public class ReadingActivity extends AppCompatActivity {
                     DBUtils.execSql("update library set type=0 where uuid=?", readingBook.getUUID());
                     snack(getString(R.string.success));
                 }
+                break;
+
+            case R.id.mnuAddToDesktop:
+            {
+                String[] listEntries = new String[SpUtils.DESKTOP_SLOT_COUNT];
+                List<DBUtils.BookEntry> desktopBooks = SpUtils.getInstance(this).getDesktopBooks();
+                for (int i = 0; i < listEntries.length; i++) {
+                    DBUtils.BookEntry bookEntry = desktopBooks.get(i);
+                    if(bookEntry == null){
+                        listEntries[i] = (i+1)+" - <空>";
+                    }
+                    else{
+                        listEntries[i] = (i+1)+" - "+TextUtils.stripText(bookEntry.getDisplayName(),32);
+                    }
+                }
+
+                new android.app.AlertDialog.Builder(this).setTitle(R.string.menu_add_to_desktop).setItems(listEntries, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SpUtils.getInstance(ReadingActivity.this).removeFromDesktop(readingBook.getUUID());
+                        SpUtils.getInstance(ReadingActivity.this).setDesktopSlot(which, readingBook.getUUID());
+                        Toast.makeText(ReadingActivity.this,getString(R.string.tm_added_to_desktop), Toast.LENGTH_SHORT).show();
+                    }
+                }).create().show();
+
+            }
+
+                break;
+
+            case R.id.mnuRemoveFromDesktop:
+                SpUtils.getInstance(this).removeFromDesktop(readingBook.getUUID());
+                Toast.makeText(this,getString(R.string.tm_removed_from_desktop), Toast.LENGTH_SHORT).show();
                 break;
             default:
                 Log.w("Unknown menu clicked: ","id="+item.getItemId());

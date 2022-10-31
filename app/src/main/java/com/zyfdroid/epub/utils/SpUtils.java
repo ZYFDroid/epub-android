@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpUtils{
     private SharedPreferences sp;
@@ -92,5 +94,60 @@ public class SpUtils{
         sp.edit().putString("font", Environment.getExternalStorageDirectory().getAbsolutePath()+"/Books/.font/"+fontpath).apply();
     }
 
+    public String getDesktopSlot(int index){
+        return sp.getString("desktop_"+index,"");
+    }
 
+    public void setDesktopSlot(int index,String uuid){
+        sp.edit().putString("desktop_"+index,uuid).apply();
+    }
+
+    public boolean isDesktopEmpty(){
+        for (int i = 0; i < DESKTOP_SLOT_COUNT; i++) {
+            if(!TextUtils.isEmpty(getDesktopSlot(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static final int DESKTOP_SLOT_COUNT = 18;
+
+    public boolean isInDesktop(String uuid){
+        for (int i = 0; i < DESKTOP_SLOT_COUNT; i++) {
+            if(getDesktopSlot(i).equals(uuid)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeFromDesktop(String uuid){
+        for (int i = 0; i < DESKTOP_SLOT_COUNT; i++) {
+            if(getDesktopSlot(i).equals(uuid)){
+                setDesktopSlot(i,"");
+            }
+        }
+    }
+
+    public List<DBUtils.BookEntry> getDesktopBooks(){
+        List<DBUtils.BookEntry> desktopBooks = new ArrayList<>();
+        for (int i = 0; i < DESKTOP_SLOT_COUNT; i++) {
+            String uuid = getDesktopSlot(i);
+            if(TextUtils.isEmpty(uuid)){
+                desktopBooks.add(null);
+            }
+            else{
+                List<DBUtils.BookEntry> result = DBUtils.queryBooks("uuid = ?",uuid);
+                if(result.size() > 0){
+                    desktopBooks.add(result.get(0));
+                }
+                else{
+                    desktopBooks.add(null);
+                    setDesktopSlot(i,"");
+                }
+            }
+        }
+        return desktopBooks;
+    }
 }
