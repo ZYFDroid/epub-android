@@ -4,5 +4,5 @@
 }
 
 *{
-    font-family: 'epub-custom';
+    font-family: 'epub-custom' !important;
 }

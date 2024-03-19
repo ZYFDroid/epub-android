@@ -56,14 +56,10 @@ import com.zyfdroid.epub.utils.TextUtils;
 import com.zyfdroid.epub.utils.ViewUtils;
 import com.zyfdroid.epub.views.EinkRecyclerView;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -133,7 +129,7 @@ public class ReadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading);
         ScreenUtils.adaptScreens(this);
-        if(!SpUtils.getInstance(this).getFullscreen()){
+        if(!SpUtils.getInstance(this).getFullscreen() && !SpUtils.getInstance(this).getEinkMode()){
 
             findViewById(R.id.readingContainer).setPadding(0,ViewUtils.dip2px(this,9),0,ViewUtils.dip2px(this,16));
         }
@@ -155,18 +151,15 @@ public class ReadingActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
-                    if(drwMain.isDrawerOpen(GravityCompat.START)){
-                        drwMain.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                    }
-                    else{
-                        drwMain.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-                    }
+                    finish();
                 }
 
             });
         }
+
         drwMain.addDrawerListener(drwButton);
         drwButton.syncState();
+
         readingBook = JsonConvert.fromJson(getIntent().getStringExtra("book"), DBUtils.BookEntry.class);
 
 
@@ -627,6 +620,21 @@ public class ReadingActivity extends AppCompatActivity {
 
                         return wr;
                     }
+
+                    if(url.endsWith("custfont.css")){
+                        String customFont = SpUtils.getInstance(ReadingActivity.this).getCustomFont();
+                        if(TextUtils.isEmpty(customFont)){
+                            HashMap<String, String> resp = new HashMap<String, String>();
+                            resp.put("Access-Control-Allow-Origin", "*");
+                            resp.put("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
+                            resp.put("Access-Control-Max-Age", "3600");
+                            resp.put("Cache-Control","max-age=114514");
+                            resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
+                            resp.put("Access-Control-Allow-Credentials", "true");
+                            WebResourceResponse wr = new WebResourceResponse("text/css", "UTF-8", 200, "OK", resp, new ByteArrayInputStream("* {}".getBytes()));
+                            return wr;
+                        }
+                    }
                 } catch (Exception ex) {
                 }
 
@@ -638,7 +646,7 @@ public class ReadingActivity extends AppCompatActivity {
                 resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
                 resp.put("Access-Control-Allow-Credentials", "true");
 
-                WebResourceResponse wr = new WebResourceResponse("text/html", "UTF-8", 200, "OK", resp, new ByteArrayInputStream("fuck".getBytes()));
+                WebResourceResponse wr = new WebResourceResponse("text/html", "UTF-8", 200, "OK", resp, new ByteArrayInputStream("404 not found".getBytes()));
 
                 return wr;
             }
@@ -672,7 +680,16 @@ public class ReadingActivity extends AppCompatActivity {
 
             public WebResourceResponse processBookResource(String path) throws FileNotFoundException {
                 MimeTypeMap mmp = MimeTypeMap.getSingleton();
+                try {
+                    String anotherName = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+                    if(new File(bookRootPath,anotherName).exists()){
+                        path = anotherName;
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
                 InputStream is = new FileInputStream(new File(bookRootPath, path));
+
                 String type = mmp.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(path));
                 return new WebResourceResponse(type, null, is);
             }
@@ -842,6 +859,13 @@ public class ReadingActivity extends AppCompatActivity {
                     ((DrawerLayout)findViewById(R.id.drwMain)).openDrawer(GravityCompat.START);
                 }
                 lastTime = System.currentTimeMillis();
+            }
+        });
+
+        htmlCallbacks.put("SWIPE", new Action<String>() {
+            @Override
+            public void run(String arg) {
+               // Nothing to do here. The page switch is handled in index.html
             }
         });
     }

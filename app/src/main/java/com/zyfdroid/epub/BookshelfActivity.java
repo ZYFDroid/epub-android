@@ -461,6 +461,11 @@ public class BookshelfActivity extends AppCompatActivity {
             return;
         }
 
+        if(SpUtils.getInstance(this).getEinkMode()){
+            // Skip loading content for faster load
+            return;
+        }
+
         if(isAllBook){
             loadData();
         }
@@ -510,11 +515,15 @@ public class BookshelfActivity extends AppCompatActivity {
             }
         },2000);
         if(SpUtils.getInstance(this).shouldOpenWithExternalReader()){
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.fromFile(new File(be.getPath())));
+
             try{
-                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectFileUriExposure().build());
-                startActivity(i);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri contentUri = BookFileProvider
+                        .getUriForFile(this,getPackageName() , new File(be.getPath()));
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(contentUri, "application/epub+zip");
+                startActivity(intent);
             }catch (Exception ex){
                 ex.printStackTrace();
                 Toast.makeText(this, R.string.open_no_external, Toast.LENGTH_SHORT).show();

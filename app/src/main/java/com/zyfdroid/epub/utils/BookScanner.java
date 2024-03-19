@@ -47,6 +47,7 @@ public class BookScanner {
     }
 
     private static TempBookInfo readBookInfo(File file){
+        Log.i("BookScanner",file.getAbsolutePath());
         String name="";
         String title="";
         try {
@@ -199,6 +200,9 @@ public class BookScanner {
                             bookEntries.add(tmpEntry);
                             readinfo.cover.recycle();
                             success++;
+                            if(i % 30 == 0){
+                                System.gc();
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

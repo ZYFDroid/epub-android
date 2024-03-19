@@ -145,6 +145,48 @@
 
 			});
 
+        var beginDragTimestamp = -1;
+        var beginDragX = -1;
+        var beginDragY = -1;
+
+        renderH.on("touchstart",function(eventdata){
+            beginDragTimestamp = eventdata.timeStamp;
+            beginDragX = eventdata.touches[0].screenX;
+            beginDragY = eventdata.touches[0].screenY;
+        });
+
+        renderH.on("touchend",function(eventdata){
+            var dragTime = eventdata.timeStamp - beginDragTimestamp;
+            if(dragTime < 800){
+                var dX = eventdata.changedTouches[0].screenX - beginDragX;
+                var dY = eventdata.changedTouches[0].screenY - beginDragY;
+                if(Math.max(Math.abs(dX),Math.abs(dY)) > 50){
+                    if(Math.abs(dX) > Math.abs(dY)){
+                        if(Math.abs(dX) > Math.abs(dY) * 2){
+                            if(dX < 0){
+                                reportMessage("SWIPE","l");
+                                next();
+                            }
+                            else{
+                                reportMessage("SWIPE","r");
+                                prev();
+                            }
+                        }
+                    }
+                    else{
+                        if(Math.abs(dY) > Math.abs(dX) * 2){
+                            if(dY < 0){
+                                reportMessage("SWIPE","u");
+                            }
+                            else{
+                                reportMessage("SWIPE","d");
+                            }
+                        }
+                    }
+                }
+
+            }
+        });
 
         renderH.on("relocated",
             function (event) {

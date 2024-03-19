@@ -54,7 +54,15 @@
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Read"
             android:screenOrientation="portrait" />
-
+        <provider
+            android:name=".BookFileProvider"
+            android:authorities="com.zyfdroid.epub"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths_public" />
+        </provider>
     </application>
 
 </manifest>
