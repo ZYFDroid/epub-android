@@ -131,7 +131,6 @@
             android:gravity="center_vertical"
             app:subtitleTextColor="#cfff"
             app:titleTextColor="#fff"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             />
 
 

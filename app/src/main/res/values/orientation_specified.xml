@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="bookshelfRow">3</integer>
+    <integer name="bookshelfCol">3</integer>
+    <integer name="drawerWidthPercent">66</integer>
+</resources>

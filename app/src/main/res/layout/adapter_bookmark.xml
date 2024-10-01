@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:padding="2dp"
-        android:clickable="true"
         app:cardCornerRadius="5dp"
         app:cardBackgroundColor="@color/book_card_bg"
         app:cardElevation="4dp">

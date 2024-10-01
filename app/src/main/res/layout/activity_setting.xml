@@ -1,80 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent"
-    tools:context=".SettingActivity">
-
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/settings_open_external"
-        android:gravity="center_vertical"
-        android:id="@+id/chkExternalOpen"
-        />
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/allownight"
-        android:gravity="center_vertical"
-        android:id="@+id/chkAllowNight"
-        />
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/eink"
-        android:gravity="center_vertical"
-        android:id="@+id/chkEink"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/requirerestart"/>
-
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/fullscreen"
-        android:gravity="center_vertical"
-        android:id="@+id/chkFullscreen"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fullscreen_mode_is_only_suggested_to_use_on_eink_device"/>
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/show_bottom_status_bar"
-        android:gravity="center_vertical"
-        android:id="@+id/chkShowStatusBar"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/clear_cache"
-        android:onClick="clearCache"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/where_the_font_at"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fontselect"
-        android:onClick="chooseFont"/>
-
+<ScrollView android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+                  android:layout_width="match_parent"
+                  android:orientation="vertical"
+                  android:layout_height="match_parent"
+                  tools:context=".SettingActivity">
+
+        <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/settings_open_external"
+                android:gravity="center_vertical"
+                android:id="@+id/chkExternalOpen"
+        />
+        <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/allownight"
+                android:gravity="center_vertical"
+                android:id="@+id/chkAllowNight"
+        />
+        <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/eink"
+                android:gravity="center_vertical"
+                android:id="@+id/chkEink"
+                android:visibility="gone"
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/requirerestart"/>
+
+        <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/fullscreen"
+                android:gravity="center_vertical"
+                android:id="@+id/chkFullscreen"
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fullscreen_mode_is_only_suggested_to_use_on_eink_device"/>
+        <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/show_bottom_status_bar"
+                android:gravity="center_vertical"
+                android:id="@+id/chkShowStatusBar"
+        />
+
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/export_finish_list"
-            android:onClick="exportComplete"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_cache"
+                android:onClick="clearCache"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/where_the_font_at"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fontselect"
+                android:onClick="chooseFont"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/export_finish_list"
+                    android:onClick="exportComplete"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
+

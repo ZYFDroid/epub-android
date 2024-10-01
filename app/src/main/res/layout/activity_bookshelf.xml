@@ -17,8 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:foregroundTint="#fff"
-            app:titleTextColor="#fff"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            app:titleTextColor="#fff"/>
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -27,15 +26,17 @@
     <com.zyfdroid.epub.views.MyDrawerView
         android:layout_width="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
+        tools:openDrawer="start"
         android:id="@+id/drwMain"
         android:layout_height="match_parent">
         <include layout="@layout/activity_bookshelf_main"/>
 
         <com.zyfdroid.epub.views.EinkRecyclerView
-            android:layout_width="wrap_content"
+            android:layout_width="270dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="@color/whitebg"
+
             android:id="@+id/navMain"/>
 
     </com.zyfdroid.epub.views.MyDrawerView>

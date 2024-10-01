@@ -28,16 +28,15 @@
         <activity
             android:name=".AboutActivity"
             android:label="@string/about"
-            android:screenOrientation="portrait"
+            android:screenOrientation="behind"
             android:theme="@style/AppTheme.DefaultActionBar" />
         <activity
             android:name=".SettingActivity"
             android:label="@string/settings"
-            android:screenOrientation="portrait"
+            android:screenOrientation="behind"
             android:theme="@style/AppTheme.DefaultActionBar" />
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,13 +46,12 @@
         </activity>
         <activity
             android:name=".BookshelfActivity"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ReadingActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Read"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="unspecified" />
         <provider
             android:name=".BookFileProvider"
             android:authorities="com.zyfdroid.epub"

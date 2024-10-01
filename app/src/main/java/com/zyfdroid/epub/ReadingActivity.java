@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
@@ -24,15 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.MimeTypeMap;
 import android.webkit.WebChromeClient;
@@ -60,6 +52,7 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -256,7 +249,7 @@ public class ReadingActivity extends AppCompatActivity {
                     }
                     View drvLeft = findViewById(R.id.drwLeft);
                     ViewGroup.LayoutParams lp = drvLeft.getLayoutParams();
-                    lp.width = drwMain.getWidth() *2 / 3;
+                    lp.width = (int) (drwMain.getWidth() * (0.01d * getResources().getInteger(R.integer.drawerWidthPercent)));
                     drvLeft.setLayoutParams(lp);
 
                 }
@@ -336,48 +329,85 @@ public class ReadingActivity extends AppCompatActivity {
     private EinkRecyclerView displayingEinkPage = null;
 
 
-    private boolean keyAlreadyDown = false;
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        keyAlreadyDown = false;
-        return super.onKeyUp(keyCode, event);
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        Log.d(TAG, "dispatchKeyEvent: Source="+event.getSource());
+        if(ViewUtils.sourceIsGamepad(event.getSource())){
+            if(event.getAction() == KeyEvent.ACTION_UP){
+                return processKeyDown(event.getKeyCode(),event);
+            }
+
+        }
+
+
+        return super.dispatchKeyEvent(event);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if(keyAlreadyDown){
+    public boolean processKeyDown(int keyCode, KeyEvent event) {
+
+        Log.d("KeyProcessor","KeyCode="+keyCode);
+        if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT){
+            if(!isDrawerOpen()){
+                openDrawer();
+            }
+            else{
+                closeDrawer();
+            }
+
             return true;
         }
-        keyAlreadyDown = true;
-        if(isDrawerOpen()){
-            if(SpUtils.getInstance(this).getEinkMode()){
-                if(displayingEinkPage != null){
-                    if(keyCode==KeyEvent.KEYCODE_VOLUME_UP){
-                        displayingEinkPage.pageUp();
-                        return true;
-                    }
 
-                    if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN){
-                        displayingEinkPage.pageDown();
-                        return true;
-                    }
-                }
+        if((keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_BUTTON_R1) && isDrawerOpen()){
+            int selectedTabPosition = drawerTab.getSelectedTabPosition();
+            selectedTabPosition++;
+            if(selectedTabPosition >= drawerTab.getTabCount()){
+                selectedTabPosition = 0;
             }
-            return super.onKeyDown(keyCode,event);
+            drawerTab.getTabAt(selectedTabPosition).select();
+            return true;
         }
 
-        if(keyCode==KeyEvent.KEYCODE_VOLUME_UP){
+
+
+        if(keyCode == KeyEvent.KEYCODE_BUTTON_Y){
+            openOptionsMenu();
+
+            return true;
+        }
+
+        if(!isDrawerOpen() &&(keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_BUTTON_X)){
             evaluteJavascriptFunction("prev");
             return true;
         }
-
-        if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN){
+        if(!isDrawerOpen() &&(keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_BUTTON_A)){
             evaluteJavascriptFunction("next");
             return true;
         }
-        return super.onKeyDown(keyCode, event);
+
+        if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_BUTTON_B){
+            onBackPressed();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean dispatchGenericMotionEvent(MotionEvent event) {
+        Log.d(TAG, "dispatchKeyEvent: Source="+event.getSource());
+        if(ViewUtils.sourceIsGamepad(event.getSource())){
+            Log.d(TAG, "dispatchGenericMotionEvent: type="+event.getAction());
+            if(event.getAction() == MotionEvent.ACTION_MOVE){
+
+            }
+            return true;
+        }
+
+
+        return super.dispatchGenericMotionEvent(event);
     }
 
     @Override
@@ -722,6 +752,27 @@ public class ReadingActivity extends AppCompatActivity {
                 super.onConsoleMessage(message, lineNumber, sourceID);
             }
         });
+        bookView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(ViewUtils.sourceIsGamepad(event.getSource())){
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        bookView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
+            @Override
+            public boolean onGenericMotion(View v, MotionEvent event) {
+                if(ViewUtils.sourceIsGamepad(event.getSource())){
+
+                    return true;
+                }
+                return false;
+            }
+        });
+        bookView.setFocusable(false);
         bookView.loadUrl(homeUrl);
     }
 
@@ -1031,6 +1082,11 @@ public class ReadingActivity extends AppCompatActivity {
     private void closeDrawer() {
         DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         drwMain.closeDrawer(Gravity.START);
+    }
+    @SuppressLint("WrongConstant")
+    private void openDrawer() {
+        DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
+        drwMain.openDrawer(Gravity.START);
     }
 
     @SuppressLint("WrongConstant")
