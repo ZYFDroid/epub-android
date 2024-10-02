@@ -3,11 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/epub-android.iml" filepath="$PROJECT_DIR$/.idea/modules/epub-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/epub-android-gamepad.iml" filepath="$PROJECT_DIR$/.idea/modules/epub-android-gamepad.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android-gamepad.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app.unitTest.iml" />

@@ -1,34 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/readingRootView"
-    android:background="@color/whitebg"
-    tools:context="com.zyfdroid.epub.ReadingActivity">
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                     xmlns:tools="http://schemas.android.com/tools"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="match_parent"
+                                                     android:id="@+id/readingRootView"
+                                                     android:defaultFocusHighlightEnabled="false"
+
+                                                     android:background="@color/whitebg"
+                                                     tools:context="com.zyfdroid.epub.ReadingActivity"
+                                                     tools:targetApi="o">
 
 
 
 
 
     <com.zyfdroid.epub.views.MyDrawerView
-        android:layout_width="match_parent"
-        android:layout_marginTop="0dp"
-        android:id="@+id/drwMain"
-        tools:openDrawer="start"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_marginTop="0dp"
+            android:id="@+id/drwMain"
+            android:defaultFocusHighlightEnabled="false"
+            android:background="@drawable/bg_clearfocushighlight"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            tools:openDrawer="start"
+            android:layout_height="match_parent" tools:targetApi="o">
 
        <FrameLayout
-           android:layout_width="match_parent"
-           android:orientation="vertical"
-           android:id="@+id/readingContainer"
-           android:layout_height="match_parent">
+               android:layout_width="match_parent"
+               android:orientation="vertical"
+               android:defaultFocusHighlightEnabled="false"
+               android:background="@drawable/bg_clearfocushighlight"
+               android:focusable="false"
+               android:focusableInTouchMode="false"
+               android:id="@+id/readingContainer"
+               android:layout_height="match_parent" tools:targetApi="o">
 
            <WebView
-               android:id="@+id/webEpub"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent" />
+                   android:id="@+id/webEpub"
+                   android:layout_width="match_parent"
+                   android:defaultFocusHighlightEnabled="false"
+                   android:background="@drawable/bg_clearfocushighlight"
+                   android:focusable="false"
+                   android:focusableInTouchMode="false"
+                   android:layout_height="match_parent" tools:targetApi="o"/>
 
            <View
                android:layout_width="20dp"

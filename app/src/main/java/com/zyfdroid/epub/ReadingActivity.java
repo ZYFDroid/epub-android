@@ -335,6 +335,7 @@ public class ReadingActivity extends AppCompatActivity {
 
         Log.d(TAG, "dispatchKeyEvent: Source="+event.getSource());
         if(ViewUtils.sourceIsGamepad(event.getSource())){
+
             if(event.getAction() == KeyEvent.ACTION_UP){
                 return processKeyDown(event.getKeyCode(),event);
             }
@@ -349,7 +350,7 @@ public class ReadingActivity extends AppCompatActivity {
     public boolean processKeyDown(int keyCode, KeyEvent event) {
 
         Log.d("KeyProcessor","KeyCode="+keyCode);
-        if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT){
+        if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_BUTTON_START){
             if(!isDrawerOpen()){
                 openDrawer();
             }
