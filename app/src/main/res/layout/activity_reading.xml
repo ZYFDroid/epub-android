@@ -95,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/whitebg"
                 app:tabIconTint="@color/textdaylight"
+                app:tabTextColor="@color/textdaylight"
                 android:id="@+id/tabMain">
 
             </com.google.android.material.tabs.TabLayout>

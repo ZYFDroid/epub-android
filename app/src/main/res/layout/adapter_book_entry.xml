@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtTitle"
                 android:textSize="13sp"
+                android:textColor="@color/textdaylight"
                 android:lines="2"
                 tools:text="TestFolder"/>
 
