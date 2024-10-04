@@ -332,14 +332,10 @@ public class ReadingActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-
-        Log.d(TAG, "dispatchKeyEvent: Source="+event.getSource());
         if(ViewUtils.sourceIsGamepad(event.getSource())){
-
             if(event.getAction() == KeyEvent.ACTION_UP){
                 return processKeyDown(event.getKeyCode(),event);
             }
-
         }
 
 
@@ -349,7 +345,6 @@ public class ReadingActivity extends AppCompatActivity {
 
     public boolean processKeyDown(int keyCode, KeyEvent event) {
 
-        Log.d("KeyProcessor","KeyCode="+keyCode);
         if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_BUTTON_START){
             if(!isDrawerOpen()){
                 openDrawer();
@@ -379,14 +374,19 @@ public class ReadingActivity extends AppCompatActivity {
             return true;
         }
 
-        if(!isDrawerOpen() &&(keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_BUTTON_X)){
-            evaluteJavascriptFunction("prev");
-            return true;
+        if(!isDrawerOpen()){
+            Log.d(TAG, "processKeyDown: "+keyCode);
+            if(keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_BUTTON_X){
+                evaluteJavascriptFunction("prev");
+                return true;
+            }
+            if(keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_BUTTON_A){
+                evaluteJavascriptFunction("next");
+                return true;
+            }
         }
-        if(!isDrawerOpen() &&(keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_BUTTON_A)){
-            evaluteJavascriptFunction("next");
-            return true;
-        }
+
+
 
         if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_BUTTON_B){
             onBackPressed();
@@ -396,121 +396,88 @@ public class ReadingActivity extends AppCompatActivity {
         return false;
     }
 
-    @Override
-    public boolean dispatchGenericMotionEvent(MotionEvent event) {
-        Log.d(TAG, "dispatchKeyEvent: Source="+event.getSource());
-        if(ViewUtils.sourceIsGamepad(event.getSource())){
-            Log.d(TAG, "dispatchGenericMotionEvent: type="+event.getAction());
-            if(event.getAction() == MotionEvent.ACTION_MOVE){
-
-            }
-            return true;
-        }
-
-
-        return super.dispatchGenericMotionEvent(event);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.mnuFontSizes:
-
-                //Base font size = 15;
-                final String[] fontsizes = new String[(200-50)/10 + 1];
-                for (int i = 0;i< fontsizes.length;i++){
-                    fontsizes[i] = ((i+5)*10) + "%";
+        int itemId = item.getItemId();
+        if (itemId == R.id.mnuFontSizes) {//Base font size = 15;
+            final String[] fontsizes = new String[(200 - 50) / 10 + 1];
+            for (int i = 0; i < fontsizes.length; i++) {
+                fontsizes[i] = ((i + 5) * 10) + "%";
+            }
+            new AlertDialog.Builder(this).setItems(fontsizes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String percentStr = fontsizes[which];
+                    float percent = Float.parseFloat(percentStr.substring(0, percentStr.length() - 1));
+                    setFontSize((int) Math.round(15f * percent / 100));
                 }
-                new AlertDialog.Builder(this).setItems(fontsizes, new DialogInterface.OnClickListener() {
+            }).create().show();
+        } else if (itemId == R.id.mnuQuickLoad) {
+            DBUtils.BookMark ql = DBUtils.quickLoad(this, readingBook.getUUID());
+            if (ql.getEpubcft().isEmpty()) {
+                snack(getString(R.string.load_empty_save));
+                return super.onOptionsItemSelected(item);
+            }
+            navTo(ql.getEpubcft());
+            snack(getString(R.string.loaded));
+        } else if (itemId == R.id.mnuQuickSave) {
+            if (!currentProgressCfi.isEmpty()) {
+                DBUtils.quickSave(readingBook.getUUID(), currentProgressCfi, currentChapter + "\n" + currentPage);
+                snack(getString(R.string.saved));
+                bookmarkAdapter.update();
+            }
+        } else if (itemId == R.id.mnuReload) {
+            setFontSize(SpUtils.getInstance(this).getTextSize());
+        } else if (itemId == R.id.mnuTempBookmark) {
+            if (tempBookmark == null) {
+                tempBookmark = currentProgressCfi;
+                item.setIcon(R.drawable.ic_menu_bookmark_lock);
+            } else {
+                evaluteJavascriptFunction("navTo", tempBookmark);
+                tempBookmark = null;
+                item.setIcon(R.drawable.ic_menu_bookmark_unlock);
+            }
+        } else if (itemId == R.id.mnuComplete) {
+            if (readingBook.getType() == 0) {
+                new AlertDialog.Builder(this).setTitle(R.string.mark_as_complete).setMessage(R.string.dlg_complete_msg).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String percentStr = fontsizes[which];
-                        float percent =Float.parseFloat(percentStr.substring(0,percentStr.length()-1));
-                        setFontSize((int)Math.round(15f * percent / 100));
+                        DBUtils.execSql("update library set type=2 where uuid=?", readingBook.getUUID());
+                        finish();
                     }
-                }).create().show();
-                break;
-            case R.id.mnuQuickLoad:
-                DBUtils.BookMark ql = DBUtils.quickLoad(this,readingBook.getUUID());
-                if(ql.getEpubcft().isEmpty()){
-                    snack(getString(R.string.load_empty_save));
-                    break;
+                }).setNegativeButton(android.R.string.no, null).create().show();
+            } else if (readingBook.getType() == 2) {
+                readingBook.setType(0);
+                DBUtils.execSql("update library set type=0 where uuid=?", readingBook.getUUID());
+                snack(getString(R.string.success));
+            }
+        } else if (itemId == R.id.mnuAddToDesktop) {
+            String[] listEntries = new String[SpUtils.DESKTOP_SLOT_COUNT];
+            List<DBUtils.BookEntry> desktopBooks = SpUtils.getInstance(this).getDesktopBooks();
+            for (int i = 0; i < listEntries.length; i++) {
+                DBUtils.BookEntry bookEntry = desktopBooks.get(i);
+                if (bookEntry == null) {
+                    listEntries[i] = (i + 1) + " - <空>";
+                } else {
+                    listEntries[i] = (i + 1) + " - " + TextUtils.stripText(bookEntry.getDisplayName(), 32);
                 }
-                navTo(ql.getEpubcft());
-                snack(getString(R.string.loaded));
-                break;
-            case R.id.mnuQuickSave:
-                if(!currentProgressCfi.isEmpty()){
-                    DBUtils.quickSave(readingBook.getUUID(),currentProgressCfi,currentChapter+"\n"+currentPage);
-                    snack(getString(R.string.saved));
-                    bookmarkAdapter.update();
-                }
-                break;
-            case R.id.mnuReload:
-                setFontSize(SpUtils.getInstance(this).getTextSize());
-                break;
-            case R.id.mnuTempBookmark:
-                if(tempBookmark==null){
-                    tempBookmark = currentProgressCfi;
-                    item.setIcon(R.drawable.ic_menu_bookmark_lock);
-                }
-                else{
-                    evaluteJavascriptFunction("navTo", tempBookmark);
-                    tempBookmark = null;
-                    item.setIcon(R.drawable.ic_menu_bookmark_unlock);
-                }
-                break;
-            case R.id.mnuComplete:
-                if(readingBook.getType() == 0) {
-                    new AlertDialog.Builder(this).setTitle(R.string.mark_as_complete).setMessage(R.string.dlg_complete_msg).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            DBUtils.execSql("update library set type=2 where uuid=?", readingBook.getUUID());
-                            finish();
-                        }
-                    }).setNegativeButton(android.R.string.no, null).create().show();
-                }else if(readingBook.getType() == 2){
-                    readingBook.setType(0);
-                    DBUtils.execSql("update library set type=0 where uuid=?", readingBook.getUUID());
-                    snack(getString(R.string.success));
-                }
-                break;
-
-            case R.id.mnuAddToDesktop:
-            {
-                String[] listEntries = new String[SpUtils.DESKTOP_SLOT_COUNT];
-                List<DBUtils.BookEntry> desktopBooks = SpUtils.getInstance(this).getDesktopBooks();
-                for (int i = 0; i < listEntries.length; i++) {
-                    DBUtils.BookEntry bookEntry = desktopBooks.get(i);
-                    if(bookEntry == null){
-                        listEntries[i] = (i+1)+" - <空>";
-                    }
-                    else{
-                        listEntries[i] = (i+1)+" - "+TextUtils.stripText(bookEntry.getDisplayName(),32);
-                    }
-                }
-
-                new android.app.AlertDialog.Builder(this).setTitle(R.string.menu_add_to_desktop).setItems(listEntries, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SpUtils.getInstance(ReadingActivity.this).removeFromDesktop(readingBook.getUUID());
-                        SpUtils.getInstance(ReadingActivity.this).setDesktopSlot(which, readingBook.getUUID());
-                        Toast.makeText(ReadingActivity.this,getString(R.string.tm_added_to_desktop), Toast.LENGTH_SHORT).show();
-                    }
-                }).create().show();
-
             }
 
-                break;
-
-            case R.id.mnuRemoveFromDesktop:
-                SpUtils.getInstance(this).removeFromDesktop(readingBook.getUUID());
-                Toast.makeText(this,getString(R.string.tm_removed_from_desktop), Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Log.w("Unknown menu clicked: ","id="+item.getItemId());
-                Log.w("Unknown menu clicked: ","text="+item.getTitle());
-
+            new android.app.AlertDialog.Builder(this).setTitle(R.string.menu_add_to_desktop).setItems(listEntries, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SpUtils.getInstance(ReadingActivity.this).removeFromDesktop(readingBook.getUUID());
+                    SpUtils.getInstance(ReadingActivity.this).setDesktopSlot(which, readingBook.getUUID());
+                    Toast.makeText(ReadingActivity.this, getString(R.string.tm_added_to_desktop), Toast.LENGTH_SHORT).show();
+                }
+            }).create().show();
+        } else if (itemId == R.id.mnuRemoveFromDesktop) {
+            SpUtils.getInstance(this).removeFromDesktop(readingBook.getUUID());
+            Toast.makeText(this, getString(R.string.tm_removed_from_desktop), Toast.LENGTH_SHORT).show();
+        } else {
+            Log.w("Unknown menu clicked: ", "id=" + item.getItemId());
+            Log.w("Unknown menu clicked: ", "text=" + item.getTitle());
         }
         return super.onOptionsItemSelected(item);
     }
