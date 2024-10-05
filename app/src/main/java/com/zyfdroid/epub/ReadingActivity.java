@@ -1,12 +1,15 @@
 package com.zyfdroid.epub;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.view.*;
 import androidx.annotation.NonNull;
@@ -115,6 +118,39 @@ public class ReadingActivity extends AppCompatActivity {
         return super.onMenuOpened(featureId, menu);
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        Configuration config = newBase.getResources().getConfiguration();
+        int nightMode = SpUtils.getInstance(newBase).getNightMode();
+
+        if(nightMode == 0){
+            super.attachBaseContext(newBase);
+            return;
+        }
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+
+            int oldInt = config.uiMode;
+
+            // day mode
+            if(nightMode == 1){
+                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_YES);
+                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_UNDEFINED);
+                oldInt = oldInt | Configuration.UI_MODE_NIGHT_NO;
+            }
+            // night mode
+            if(nightMode == 2){
+                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_NO);
+                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_UNDEFINED);
+                oldInt = oldInt | Configuration.UI_MODE_NIGHT_YES;
+            }
+            config.uiMode = oldInt;
+        }
+
+        Context context = newBase.createConfigurationContext(config);
+        super.attachBaseContext(context);
+    }
+
     float readActionBarSize = 0;
     View readActionBar = null;
     @Override
@@ -162,9 +198,7 @@ public class ReadingActivity extends AppCompatActivity {
         bookView = findViewById(R.id.webEpub);
 
         if(getString(R.string.isnightmode).contains("yes")){
-            if(SpUtils.getInstance(ReadingActivity.this).getAllowNightMode()){
-                bookView.setBackgroundColor(0);
-            }
+            bookView.setBackgroundColor(0);
         }
 
         bookmarkAdapter = new BookmarkAdapter();
@@ -327,6 +361,46 @@ public class ReadingActivity extends AppCompatActivity {
     }
 
     private EinkRecyclerView displayingEinkPage = null;
+
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(keyCode==KeyEvent.KEYCODE_VOLUME_UP || keyCode==KeyEvent.KEYCODE_VOLUME_DOWN) {
+
+            if (event.getRepeatCount() > 0) {
+                return true;
+            }
+            if (isDrawerOpen()) {
+                if (SpUtils.getInstance(this).getEinkMode()) {
+                    if (displayingEinkPage != null) {
+                        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                            displayingEinkPage.pageUp();
+                            return true;
+                        }
+
+                        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                            displayingEinkPage.pageDown();
+                            return true;
+                        }
+                    }
+                }
+                return super.onKeyDown(keyCode, event);
+            }
+
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                evaluteJavascriptFunction("prev");
+                return true;
+            }
+
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                evaluteJavascriptFunction("next");
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
 
 
@@ -785,9 +859,9 @@ public class ReadingActivity extends AppCompatActivity {
             @Override
             public void run(String arg) {
                 if(getString(R.string.isnightmode).contains("yes")){
-                    if(SpUtils.getInstance(ReadingActivity.this).getAllowNightMode()){
+
                         evaluteJavascriptFunction("setNight()");
-                    }
+
                 }
                 evaluteJavascriptFunction("loadBookAtUrl", contentOpfPath, DBUtils.autoLoad(ReadingActivity.this,readingBook.getUUID()).getEpubcft(),SpUtils.getInstance(ReadingActivity.this).getTextSize());
             }
@@ -1101,32 +1175,34 @@ public class ReadingActivity extends AppCompatActivity {
         }
         bookView.onPause();
     }
-}
 
 
-class TocEntry implements Cloneable {
-    public String id;
-    public String href;
-    public String label;
-    public TocEntry[] subitems;
+    public static class TocEntry implements Cloneable {
+        public String id;
+        public String href;
+        public String label;
+        public TocEntry[] subitems;
 
-    @Override
-    protected Object clone() {
-        TocEntry obj = new TocEntry();
-        obj.href = href;
-        obj.id = id;
-        obj.label = label;
-        obj.subitems = null;
-        return obj;
+        @Override
+        protected Object clone() {
+            TocEntry obj = new TocEntry();
+            obj.href = href;
+            obj.id = id;
+            obj.label = label;
+            obj.subitems = null;
+            return obj;
+        }
+    }
+
+    public static class BookSpine {
+        public String idref;
+        public int index;
+        public String href;
+    }
+
+    public interface Action<T> {
+        public void run(T arg);
     }
 }
 
-class BookSpine {
-    public String idref;
-    public int index;
-    public String href;
-}
 
-interface Action<T> {
-    public void run(T arg);
-}

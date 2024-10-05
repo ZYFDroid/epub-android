@@ -17,20 +17,43 @@
                 android:gravity="center_vertical"
                 android:id="@+id/chkExternalOpen"
         />
-        <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="@string/allownight"
-                android:gravity="center_vertical"
-                android:id="@+id/chkAllowNight"
-        />
+        <RadioGroup android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical"
+                    android:id="@+id/radNightModes"
+        >
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_reading_theme"/>
+
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_reading_theme_daynight"
+                    android:id="@+id/chkReadingNightFollowSystem"
+            />
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_reading_theme_always_light"
+                    android:id="@+id/chkReadingNightAlwaysLight"
+            />
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_reading_theme_always_dark"
+                    android:id="@+id/chkReadingNightAlwaysDark"
+            />
+        </RadioGroup>
+
         <CheckBox
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="@string/eink"
                 android:gravity="center_vertical"
                 android:id="@+id/chkEink"
-                android:visibility="gone"
+                android:visibility="visible"
         />
         <TextView
                 android:layout_width="wrap_content"

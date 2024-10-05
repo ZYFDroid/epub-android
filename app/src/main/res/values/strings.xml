@@ -79,4 +79,8 @@
     <string name="menu_add_to_desktop">Which position will the book be put:</string>
     <string name="tm_added_to_desktop">The book has been put on the desktop.</string>
     <string name="tm_removed_from_desktop">The book has been removed from desktop.</string>
+    <string name="settings_reading_theme">Reading Theme: (Android 8+)</string>
+    <string name="settings_reading_theme_daynight">Follow system</string>
+    <string name="settings_reading_theme_always_light">Light Theme (for E-Ink devices)</string>
+    <string name="settings_reading_theme_always_dark">Dark Theme (Save power on OLED device)</string>
 </resources>

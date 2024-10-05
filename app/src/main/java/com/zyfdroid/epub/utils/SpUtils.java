@@ -30,11 +30,12 @@ public class SpUtils{
     public boolean getEinkMode(){return sp.getBoolean("eink",false);}
     public void setEinkMode(boolean b){sp.edit().putBoolean("eink",b).apply();}
 
-    public boolean getAllowNightMode(){
-        return sp.getBoolean("nightmode",true);
+
+    public int getNightMode(){
+        return sp.getInt("nightmode2",0);
     }
-    public void setAllowNightMode(boolean value){
-        sp.edit().putBoolean("nightmode",value).apply();
+    public void setNightMode(int value){
+        sp.edit().putInt("nightmode2",value).apply();
     }
     public void setOpenWithExternalReader(boolean b){
         sp.edit().putBoolean("openWithExternalReader",b).apply();

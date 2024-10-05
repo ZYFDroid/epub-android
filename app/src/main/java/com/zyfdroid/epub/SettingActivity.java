@@ -5,13 +5,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.zyfdroid.epub.utils.CinematicProgressDialog;
 import com.zyfdroid.epub.utils.DBUtils;
@@ -38,14 +36,29 @@ public class SettingActivity extends AppCompatActivity {
     CheckBox chkEink;
     CheckBox chkFullscreen;
     CheckBox chkShowStatusBar;
+
+    RadioGroup readingThemes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         chkOpenExternal = findViewById(R.id.chkExternalOpen);
         chkOpenExternal.setChecked(SpUtils.getInstance(this).shouldOpenWithExternalReader());
-        chkAllowNight = findViewById(R.id.chkAllowNight);
-        chkAllowNight.setChecked(SpUtils.getInstance(this).getAllowNightMode());
+        readingThemes = findViewById(R.id.radNightModes);
+
+        readingThemes.check(new int[]{
+                R.id.chkReadingNightFollowSystem,
+                R.id.chkReadingNightAlwaysLight,
+                R.id.chkReadingNightAlwaysDark}
+                [SpUtils.getInstance(this).getNightMode()]);
+        readingThemes.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.chkReadingNightFollowSystem){SpUtils.getInstance(SettingActivity.this).setNightMode(0);}
+                if(checkedId == R.id.chkReadingNightAlwaysLight){SpUtils.getInstance(SettingActivity.this).setNightMode(1);}
+                if(checkedId == R.id.chkReadingNightAlwaysDark){SpUtils.getInstance(SettingActivity.this).setNightMode(2);}
+            }
+        });
         chkEink = findViewById(R.id.chkEink);
         chkEink.setChecked(SpUtils.getInstance(this).getEinkMode());
         chkFullscreen = findViewById(R.id.chkFullscreen);
@@ -60,12 +73,7 @@ public class SettingActivity extends AppCompatActivity {
                 SpUtils.getInstance(SettingActivity.this).setOpenWithExternalReader(isChecked);
             }
         });
-        chkAllowNight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SpUtils.getInstance(SettingActivity.this).setAllowNightMode(isChecked);
-            }
-        });
+
         chkEink.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
