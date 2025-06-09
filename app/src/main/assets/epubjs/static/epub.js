@@ -5689,7 +5689,7 @@ var DefaultViewManager = function () {
 
 				left = this.container.scrollLeft + this.container.offsetWidth + this.layout.delta;
 
-				if (left <= this.container.scrollWidth) {
+				if (left <= this.container.scrollWidth * 1.003) {
 					this.scrollBy(this.layout.delta, 0, true);
 				} else {
 					next = this.views.last().section.next();
