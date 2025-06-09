@@ -616,17 +616,24 @@ public class ReadingActivity extends AppCompatActivity {
         WebSettings ws = bookView.getSettings();
         ws.setAllowContentAccess(true);
         ws.setAllowFileAccess(true);
-        ws.setAllowFileAccessFromFileURLs(true);
-        ws.setAllowUniversalAccessFromFileURLs(true);
-        ws.setAppCacheEnabled(true);
-        ws.setAppCachePath(getCacheDir()+"/bvc");
+        // ws.setAppCacheEnabled(true);
+        // ws.setAppCachePath(getCacheDir()+"/bvc");
         ws.setDatabaseEnabled(true);
+
         ws.setCacheMode(WebSettings.LOAD_DEFAULT);
         ws.setJavaScriptEnabled(true);
         ws.setUseWideViewPort(true);
         ws.setLoadWithOverviewMode(true);
         ws.setDefaultFontSize(SpUtils.getInstance(this).getTextSize());
         bookView.setWebContentsDebuggingEnabled(true);
+        if(SpUtils.getInstance(this).getShouldClearCache()){
+            try{
+                bookView.clearCache(true);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+            SpUtils.getInstance(this).setShouldClearCache(false);
+        }
         initHtmlCallback();
         bookView.setWebViewClient(new WebViewClient() {
             @Override
@@ -793,6 +800,8 @@ public class ReadingActivity extends AppCompatActivity {
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
                 super.onConsoleMessage(message, lineNumber, sourceID);
             }
+
+
         });
         bookView.setOnKeyListener(new View.OnKeyListener() {
             @Override

@@ -48,9 +48,14 @@ public class SpUtils{
     public boolean getFullscreen(){
         return sp.getBoolean("fullscreen3",false);
     }
-
+    public boolean getShouldClearCache(){
+        return sp.getBoolean("webViewShouldClearCache",false);
+    }
     public void setFullscreen(boolean fullscreen){
         sp.edit().putBoolean("fullscreen3",fullscreen).apply();
+    }
+    public void setShouldClearCache(boolean shouldClearCache){
+        sp.edit().putBoolean("webViewShouldClearCache",shouldClearCache).apply();
     }
 
     public boolean getShowStatusBar(){

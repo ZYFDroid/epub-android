@@ -141,6 +141,7 @@ public class SettingActivity extends AppCompatActivity {
                     SpUtils.getInstance(SettingActivity.this).setCustomFont("");
                 }
                 SpUtils.getInstance(SettingActivity.this).setCustomFont(options[which]);
+                SpUtils.getInstance(SettingActivity.this).setShouldClearCache(true);
                 //Clear font cache
                 delFileAndDir(new File(getCacheDir(),"bvc"));
             }
