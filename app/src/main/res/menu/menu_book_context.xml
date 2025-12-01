@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/mnuOpenRead" android:title="@string/mnu_abc_start_reading" android:icon="@drawable/ic_list_go" />
+    <item android:id="@+id/mnuComplete" android:title="@string/mark_as_complete" android:icon="@drawable/ic_menu_done" />
+    <item android:id="@+id/mnuAddToDesktop" android:title="@string/add_to_desktop" android:icon="@drawable/ic_menu_add_to_desktop_dark" />
+    <item android:id="@+id/mnuRemoveFromDesktop" android:title="@string/remove_from_desktop" android:icon="@drawable/ic_menu_add_to_desktop_dark" />
+    <item android:id="@+id/mnuShareTo" android:title="@string/abc_share_book_to" android:icon="@drawable/ic_menu_load" />
+    <item android:id="@+id/mnuShareToXTEink" android:visible="false" android:title="@string/abc_share_to_xetink" android:icon="@drawable/ic_menu_load" />
+</menu>

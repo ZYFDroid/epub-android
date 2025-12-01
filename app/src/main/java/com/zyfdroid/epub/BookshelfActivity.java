@@ -1,6 +1,7 @@
 package com.zyfdroid.epub;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.view.*;
+import android.widget.*;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -27,20 +29,11 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Downloader;
 import com.squareup.picasso.Picasso;
-import com.zyfdroid.epub.utils.BookScanner;
-import com.zyfdroid.epub.utils.DBUtils;
-import com.zyfdroid.epub.utils.EpubUtils;
-import com.zyfdroid.epub.utils.SpUtils;
-import com.zyfdroid.epub.utils.TextUtils;
-import com.zyfdroid.epub.utils.ViewUtils;
+import com.zyfdroid.epub.utils.*;
 import com.zyfdroid.epub.views.EinkRecyclerView;
 
 import java.io.File;
@@ -57,6 +50,7 @@ public class BookshelfActivity extends AppCompatActivity {
     DrawerLayout drwMain;
     ActionBarDrawerToggle drwButton;
 
+    boolean isXTEinkAppInstalled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +139,8 @@ public class BookshelfActivity extends AppCompatActivity {
                 drwMain.closeDrawer(GravityCompat.START);
             }
         },301);
+        isXTEinkAppInstalled = AppUtils.isXTEinkAppInstalled(this);
+
     }
 
 
@@ -174,10 +170,10 @@ public class BookshelfActivity extends AppCompatActivity {
 
     public void loadData(){
         setTitle(R.string.all_books);
-        isAllBook = true;
         loadMenuRange(DBUtils.queryFoldersNotEmpty().toArray(new DBUtils.BookEntry[0]));
 
         loadBooksList(getRecommandBook(null));
+        isAllBook = true;
     }
 
     private List<DBUtils.BookEntry> getRecommandBook(String query,String... param){
@@ -306,6 +302,7 @@ public class BookshelfActivity extends AppCompatActivity {
     }
 
     boolean isAllBook = false;
+    boolean isDoneBook = false;
     DBUtils.BookEntry currentDirectory = null;
 
     public void loadBooksList(List<DBUtils.BookEntry> books){
@@ -320,6 +317,8 @@ public class BookshelfActivity extends AppCompatActivity {
         _mnuAllBookButton.setVisible(false);
         _mnuSearchButton.setVisible(true);
         isDesktop = false;
+        isDoneBook = false;
+        isAllBook = false;
     }
 
     List<MenuItem> folderMenuItems = new ArrayList<>();
@@ -328,8 +327,10 @@ public class BookshelfActivity extends AppCompatActivity {
 
     public void loadCompleteBooks(View v){
         isAllBook = false;
+        isDesktop = false;
         setTitle(getString(R.string.title_completed_books));
         loadBooksList(DBUtils.queryBooks("type=2 order by lastopen desc"));
+        isDoneBook = true;
         DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         if(drwMain.isDrawerOpen(GravityCompat.START)){
             drwMain.closeDrawer(GravityCompat.START);
@@ -499,13 +500,26 @@ public class BookshelfActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode,event);
     }
 
+    private void refresh(){
+        if(isAllBook){loadData();}
+        else if(isDesktop){
+            loadDesktop(null);
+        }else if(isDoneBook){
+            loadCompleteBooks(null);
+        }
+        else if(currentDirectory != null){
+            List<DBUtils.BookEntry> lsResult = getRecommandBook("parent_uuid=? ",currentDirectory.getUUID());
+            setTitle(currentDirectory.getDisplayName());
+            loadBooksList(lsResult);
+        }
+    }
 
     public void onBookClick(DBUtils.BookEntry be){
         DBUtils.execSql("update library set lastopen=? where uuid=?",System.currentTimeMillis(),be.getUUID());
         hWnd.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(isAllBook){loadData();}
+                refresh();
             }
         },2000);
         if(SpUtils.getInstance(this).shouldOpenWithExternalReader()){
@@ -528,6 +542,123 @@ public class BookshelfActivity extends AppCompatActivity {
         i.putExtra("book",JsonConvert.toJson(be));
         startActivity(i);
     }
+    public void onBookLongClick(final DBUtils.BookEntry readingBook,View targetView){
+        PopupMenu popupMenu = new PopupMenu(this,targetView);
+        popupMenu.inflate(R.menu.menu_book_context);
+
+        MenuItem mi = popupMenu.getMenu().findItem(R.id.mnuComplete);
+
+        if(mi.getItemId()==R.id.mnuComplete){
+            if(readingBook.getType() == 2){
+                mi.setTitle(R.string.mark_as_not_completed);
+            }
+        }
+
+        popupMenu.getMenu().findItem(R.id.mnuAddToDesktop).setVisible(!isDesktop);
+        popupMenu.getMenu().findItem(R.id.mnuRemoveFromDesktop).setVisible(isDesktop);
+        popupMenu.getMenu().findItem(R.id.mnuShareToXTEink).setVisible(isXTEinkAppInstalled);
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+
+                if(itemId == R.id.mnuOpenRead){
+                    onBookClick(readingBook);
+                }
+                else  if (itemId == R.id.mnuComplete) {
+                    if (readingBook.getType() == 0) {
+                        new androidx.appcompat.app.AlertDialog.Builder(BookshelfActivity.this).setTitle(R.string.mark_as_complete).setMessage(R.string.dlg_complete_msg).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DBUtils.execSql("update library set type=2 where uuid=?", readingBook.getUUID());
+                                refresh();
+                            }
+                        }).setNegativeButton(android.R.string.no, null).create().show();
+                    } else if (readingBook.getType() == 2) {
+                        readingBook.setType(0);
+                        DBUtils.execSql("update library set type=0 where uuid=?", readingBook.getUUID());
+                        Toast.makeText(BookshelfActivity.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
+                        refresh();
+                    }
+                } else if (itemId == R.id.mnuAddToDesktop) {
+                    String[] listEntries = new String[SpUtils.DESKTOP_SLOT_COUNT];
+                    List<DBUtils.BookEntry> desktopBooks = SpUtils.getInstance(BookshelfActivity.this).getDesktopBooks();
+                    for (int i = 0; i < listEntries.length; i++) {
+                        DBUtils.BookEntry bookEntry = desktopBooks.get(i);
+                        if (bookEntry == null) {
+                            listEntries[i] = (i + 1) + " - <空>";
+                        } else {
+                            listEntries[i] = (i + 1) + " - " + TextUtils.stripText(bookEntry.getDisplayName(), 32);
+                        }
+                    }
+
+                    new android.app.AlertDialog.Builder(BookshelfActivity.this).setTitle(R.string.menu_add_to_desktop).setItems(listEntries, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SpUtils.getInstance(BookshelfActivity.this).removeFromDesktop(readingBook.getUUID());
+                            SpUtils.getInstance(BookshelfActivity.this).setDesktopSlot(which, readingBook.getUUID());
+                            Toast.makeText(BookshelfActivity.this, getString(R.string.tm_added_to_desktop), Toast.LENGTH_SHORT).show();
+                        }
+                    }).create().show();
+                } else if (itemId == R.id.mnuRemoveFromDesktop) {
+                    SpUtils.getInstance(BookshelfActivity.this).removeFromDesktop(readingBook.getUUID());
+                    Toast.makeText(BookshelfActivity.this, getString(R.string.tm_removed_from_desktop), Toast.LENGTH_SHORT).show();
+                    if(isDesktop){
+                        refresh();
+                    }
+                }
+                else if(itemId == R.id.mnuShareTo){
+                    shareBook(readingBook);
+                }
+                else if(itemId == R.id.mnuShareToXTEink){
+                    shareBookToApp(readingBook,AppUtils.XTEINL_PACKAGE_NAME);
+                }
+                return true;
+            }
+        });
+        popupMenu.show();
+    }
+
+    private void shareBook(DBUtils.BookEntry be){
+        try{
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            Uri contentUri = BookFileProvider
+                    .getUriForFile(this,getPackageName() , new File(be.getPath()));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(contentUri, "application/epub+zip");
+            intent.setClipData(ClipData.newRawUri("", contentUri));
+            intent.addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, getString(R.string.abc_share_book_to)));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            Toast.makeText(this, R.string.open_no_external, Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void shareBookToApp(DBUtils.BookEntry be,String appPackage){
+        try{
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            Uri contentUri = BookFileProvider
+                    .getUriForFile(this,getPackageName() , new File(be.getPath()));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(contentUri, "application/epub+zip");
+            intent.setClipData(ClipData.newRawUri("", contentUri));
+            intent.addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setPackage(appPackage);
+            startActivity(intent);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            Toast.makeText(this, R.string.open_no_external, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookAdapterViewHolder>{
         public List<DBUtils.BookEntry> books;
@@ -564,6 +695,7 @@ public class BookshelfActivity extends AppCompatActivity {
             mCoverLoader.load(Uri.parse("epubentry://"+Base64.encodeToString(JsonConvert.toJson(bk).getBytes(),Base64.URL_SAFE))).noFade().into(holder.bookCover);
             holder.crdBook.setClickable(true);
             holder.crdBook.setOnClickListener(new BookClicker(bk));
+            holder.crdBook.setOnLongClickListener(new BookLongClicker(bk,holder.crdBook));
             if(bk.getType()==2){
                 holder.badgeFin.setVisibility(View.VISIBLE);
                 holder.bookCover.setAlpha(0.3f);
@@ -593,16 +725,33 @@ public class BookshelfActivity extends AppCompatActivity {
                 badgeFin = rootView.findViewById(R.id.badgeFin);
             }
         }
-         class BookClicker implements View.OnClickListener{
+        class BookClicker implements View.OnClickListener{
             DBUtils.BookEntry entry;
             public BookClicker(DBUtils.BookEntry entry) {
                 this.entry = entry;
             }
 
-             @Override
-             public void onClick(View view) {
-                 onBookClick(entry);
-             }
+            @Override
+            public void onClick(View view) {
+                onBookClick(entry);
+            }
+
+
+        }
+
+        class BookLongClicker implements View.OnLongClickListener{
+            DBUtils.BookEntry entry;
+            View targetView;
+            public BookLongClicker(DBUtils.BookEntry entry,View targetView) {
+                this.entry = entry;
+                this.targetView = targetView;
+            }
+
+            @Override
+            public boolean onLongClick(View view) {
+                onBookLongClick(entry,targetView);
+                return true;
+            }
 
 
         }

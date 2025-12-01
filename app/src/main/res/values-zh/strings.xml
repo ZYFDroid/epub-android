@@ -84,8 +84,12 @@
     <string name="menu_add_to_desktop">要放到桌面的那个位置</string>
     <string name="tm_added_to_desktop">已添加到桌面</string>
     <string name="tm_removed_from_desktop">已从桌面移除</string>
-    <string name="settings_reading_theme">阅读页面主题 (Android 8+)</string>
+    <string name="settings_reading_theme">阅读页面主题 (Android 9+, need restart)</string>
     <string name="settings_reading_theme_daynight">跟随系统</string>
     <string name="settings_reading_theme_always_light">亮色主题（适配电子书模式）</string>
     <string name="settings_reading_theme_always_dark">暗色主题（在OLED/MiniLED上更省电）</string>
+    <string name="abc_share_book_to">分享书籍到...</string>
+    <string name="mnu_abc_start_reading">开始阅读</string>
+
+    <string name="abc_share_to_xetink">推送到阅星曈</string>
 </resources>

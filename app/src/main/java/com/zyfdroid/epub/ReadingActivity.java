@@ -74,6 +74,15 @@ public class ReadingActivity extends AppCompatActivity {
     String internalUrlStatic = "http://epub.zyfdroid.com/static";
     String internalUrlBook = "http://epub.zyfdroid.com/book";
     String dummyScriptUrl = "http://epub.zyfdroid.com/api/reportmode.js";
+    String dummyCSSUrl = "http://epub.zyfdroid.com/static/custfont.css";
+    String dummyCSSContent = "@font-face{\n" +
+            "    font-family:'epub-custom';\n" +
+            "    src:url('/static/defaultFont.ttf') format('truetype');\n" +
+            "}\n" +
+            "\n" +
+            "*{\n" +
+            "    font-family: 'epub-custom' !important;\n" +
+            "}";
     String homeUrl = "http://epub.zyfdroid.com/static/index.html";
 
     String fontUrl = "http://epub.zyfdroid.com/static/defaultFont.ttf";
@@ -86,7 +95,6 @@ public class ReadingActivity extends AppCompatActivity {
     BookmarkAdapter bookmarkAdapter;
 
     byte[] cachedFont = new byte[0];
-
 
 
     @Override
@@ -103,12 +111,12 @@ public class ReadingActivity extends AppCompatActivity {
             }
             for (int i = 0; i < menu.size(); i++) {
                 MenuItem mi = menu.getItem(i);
-                if(mi.getItemId()!=R.id.mnuTempBookmark) {
+                if (mi.getItemId() != R.id.mnuTempBookmark) {
                     ColorStateList color = (ColorStateList.valueOf(getResources().getColor(R.color.textdaylight)));
                     MenuItemCompat.setIconTintList(mi, color);
                 }
-                if(mi.getItemId()==R.id.mnuComplete){
-                    if(readingBook.getType() == 2){
+                if (mi.getItemId() == R.id.mnuComplete) {
+                    if (readingBook.getType() == 2) {
                         mi.setTitle(R.string.mark_as_not_completed);
                     }
                 }
@@ -123,28 +131,28 @@ public class ReadingActivity extends AppCompatActivity {
         Configuration config = newBase.getResources().getConfiguration();
         int nightMode = SpUtils.getInstance(newBase).getNightMode();
 
-        if(nightMode == 0){
+        if (nightMode == 0) {
             super.attachBaseContext(newBase);
             return;
         }
 
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
-
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             int oldInt = config.uiMode;
 
+            Log.d(TAG, "attachBaseContext: Expected Night Mode = " + nightMode);
+            Log.d(TAG, "attachBaseContext: CurrentUIModeInt = " + oldInt);
             // day mode
-            if(nightMode == 1){
-                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_YES);
-                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_UNDEFINED);
+            if (nightMode == 1) {
+                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_MASK);
                 oldInt = oldInt | Configuration.UI_MODE_NIGHT_NO;
             }
             // night mode
-            if(nightMode == 2){
-                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_NO);
-                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_UNDEFINED);
+            if (nightMode == 2) {
+                oldInt = oldInt & (~Configuration.UI_MODE_NIGHT_MASK);
                 oldInt = oldInt | Configuration.UI_MODE_NIGHT_YES;
             }
             config.uiMode = oldInt;
+            Log.d(TAG, "attachBaseContext: ModifiedUIModeInt = " + oldInt);
         }
 
         Context context = newBase.createConfigurationContext(config);
@@ -153,14 +161,15 @@ public class ReadingActivity extends AppCompatActivity {
 
     float readActionBarSize = 0;
     View readActionBar = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading);
         ScreenUtils.adaptScreens(this);
-        if(!SpUtils.getInstance(this).getFullscreen() && !SpUtils.getInstance(this).getEinkMode()){
+        if (!SpUtils.getInstance(this).getFullscreen() && !SpUtils.getInstance(this).getEinkMode()) {
 
-            findViewById(R.id.readingContainer).setPadding(0,ViewUtils.dip2px(this,9),0,ViewUtils.dip2px(this,16));
+            findViewById(R.id.readingContainer).setPadding(0, ViewUtils.dip2px(this, 9), 0, ViewUtils.dip2px(this, 16));
         }
         tocHashMap.clear();
         findViewById(R.id.tblStatusBar).setVisibility(SpUtils.getInstance(this).getShowStatusBar() ? View.VISIBLE : View.GONE);
@@ -168,14 +177,14 @@ public class ReadingActivity extends AppCompatActivity {
 
         readActionBarSize = getResources().getDimensionPixelSize(R.dimen.readActionbarHeight);
         readActionBar = findViewById(R.id.readingTitleBar);
-        readActionBar.setTranslationY(- readActionBarSize);
+        readActionBar.setTranslationY(-readActionBarSize);
         tocList.clear();
         setSupportActionBar((Toolbar) findViewById(R.id.titMain));
 
         readActionBar.setElevation(0);
         final DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
-        ActionBarDrawerToggle drwButton = new ActionBarDrawerToggle(this,drwMain,(Toolbar) findViewById(R.id.titMain),R.string.app_name,R.string.app_name);
-        if(SpUtils.getInstance(this).getEinkMode()) {
+        ActionBarDrawerToggle drwButton = new ActionBarDrawerToggle(this, drwMain, (Toolbar) findViewById(R.id.titMain), R.string.app_name, R.string.app_name);
+        if (SpUtils.getInstance(this).getEinkMode()) {
             ((Toolbar) findViewById(R.id.titMain)).setNavigationOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -192,15 +201,16 @@ public class ReadingActivity extends AppCompatActivity {
         readingBook = JsonConvert.fromJson(getIntent().getStringExtra("book"), DBUtils.BookEntry.class);
 
 
-
         bookRootPath = new File(EpubUtils.cacheBookPath, readingBook.getUUID()).getAbsolutePath();
         drawerTab = findViewById(R.id.tabMain);
         bookView = findViewById(R.id.webEpub);
 
-        if(getString(R.string.isnightmode).contains("yes")){
+        if (getString(R.string.isnightmode).contains("yes")) {
             bookView.setBackgroundColor(0);
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            findViewById(R.id.readingRootView).setBackgroundColor(getColor(R.color.whitebg));
+        }
         bookmarkAdapter = new BookmarkAdapter();
         ((RecyclerView) findViewById(R.id.listBookmarks)).setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         ((RecyclerView) findViewById(R.id.listBookmarks)).setAdapter(bookmarkAdapter);
@@ -211,7 +221,7 @@ public class ReadingActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 View v = findViewById((Integer) tab.getTag());
                 v.setVisibility(View.VISIBLE);
-                if(v instanceof EinkRecyclerView){
+                if (v instanceof EinkRecyclerView) {
                     displayingEinkPage = ((EinkRecyclerView) v);
                 }
             }
@@ -226,7 +236,7 @@ public class ReadingActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
                 View v = findViewById((Integer) tab.getTag());
                 v.setVisibility(View.VISIBLE);
-                if(v instanceof EinkRecyclerView){
+                if (v instanceof EinkRecyclerView) {
                     displayingEinkPage = ((EinkRecyclerView) v);
                 }
             }
@@ -239,64 +249,63 @@ public class ReadingActivity extends AppCompatActivity {
         }
         setTitle(readingBook.getDisplayName());
         getSupportActionBar().setSubtitle(getString(R.string.load_loading));
-        hWnd.postDelayed(loadingLazyShower,200);
+        hWnd.postDelayed(loadingLazyShower, 200);
 
-            hWnd.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    readActionBar.setElevation(0);
-                    if(SpUtils.getInstance(ReadingActivity.this).getEinkMode()) {
-                        EinkRecyclerView rv = findViewById(R.id.listChapters);
-                        EinkRecyclerView rv2 = findViewById(R.id.listBookmarks);
-                        rv.startEinkMode(LinearLayout.VERTICAL, (int) ((float) rv.getHeight() * 0.9f));
-                        rv2.startEinkMode(LinearLayout.VERTICAL, (int) ((float) rv.getHeight() * 0.9f));
-                        //                                                      ↑ There is no mistakes.
-                        //                                               The rv2 is invisible and its height is 0
-                        //                                                  so use rv instead.
-                        findViewById(R.id.einkDrawerOpener).setVisibility(View.VISIBLE);
-                        findViewById(R.id.einkDrawerOpener).setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View v, MotionEvent event) {
-                                if(event.getAction()==MotionEvent.ACTION_UP && event.getX() > v.getWidth()){
-                                    drwMain.openDrawer(GravityCompat.START);
-                                }
-                                return true;
+        hWnd.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                readActionBar.setElevation(0);
+                if (SpUtils.getInstance(ReadingActivity.this).getEinkMode()) {
+                    EinkRecyclerView rv = findViewById(R.id.listChapters);
+                    EinkRecyclerView rv2 = findViewById(R.id.listBookmarks);
+                    rv.startEinkMode(LinearLayout.VERTICAL, (int) ((float) rv.getHeight() * 0.9f));
+                    rv2.startEinkMode(LinearLayout.VERTICAL, (int) ((float) rv.getHeight() * 0.9f));
+                    //                                                      ↑ There is no mistakes.
+                    //                                               The rv2 is invisible and its height is 0
+                    //                                                  so use rv instead.
+                    findViewById(R.id.einkDrawerOpener).setVisibility(View.VISIBLE);
+                    findViewById(R.id.einkDrawerOpener).setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if (event.getAction() == MotionEvent.ACTION_UP && event.getX() > v.getWidth()) {
+                                drwMain.openDrawer(GravityCompat.START);
                             }
-                        });
-                        drwMain.addDrawerListener(einkGestureSwitcher);
-                        View closer = findViewById(R.id.einkDrawerCloser);
-                        ViewGroup.LayoutParams lp = closer.getLayoutParams();
-                        lp.width = drwMain.getWidth() /3;
-                        closer.setLayoutParams(lp);
-                        closer.setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View v, MotionEvent event) {
-                                if(event.getAction()==MotionEvent.ACTION_UP){
-                                    drwMain.closeDrawer(GravityCompat.START);
-                                }
-                                return true;
+                            return true;
+                        }
+                    });
+                    drwMain.addDrawerListener(einkGestureSwitcher);
+                    View closer = findViewById(R.id.einkDrawerCloser);
+                    ViewGroup.LayoutParams lp = closer.getLayoutParams();
+                    lp.width = drwMain.getWidth() / 3;
+                    closer.setLayoutParams(lp);
+                    closer.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+                                drwMain.closeDrawer(GravityCompat.START);
                             }
-                        });
-                    }
-                    else{
-                        drwMain.addDrawerListener(nonEinkGestureSwitcher);
-                    }
-                    View drvLeft = findViewById(R.id.drwLeft);
-                    ViewGroup.LayoutParams lp = drvLeft.getLayoutParams();
-                    lp.width = (int) (drwMain.getWidth() * (0.01d * getResources().getInteger(R.integer.drawerWidthPercent)));
-                    drvLeft.setLayoutParams(lp);
-
+                            return true;
+                        }
+                    });
+                } else {
+                    drwMain.addDrawerListener(nonEinkGestureSwitcher);
                 }
-            }, 300);
-            if(SpUtils.getInstance(this).shouldShowFullscreenHint()){
-                Toast.makeText(this, R.string.fullscreen_hint,Toast.LENGTH_LONG).show();
+                View drvLeft = findViewById(R.id.drwLeft);
+                ViewGroup.LayoutParams lp = drvLeft.getLayoutParams();
+                lp.width = (int) (drwMain.getWidth() * (0.01d * getResources().getInteger(R.integer.drawerWidthPercent)));
+                drvLeft.setLayoutParams(lp);
+
             }
+        }, 300);
+        if (SpUtils.getInstance(this).shouldShowFullscreenHint()) {
+            Toast.makeText(this, R.string.fullscreen_hint, Toast.LENGTH_LONG).show();
+        }
     }
 
     DrawerLayout.DrawerListener nonEinkGestureSwitcher = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-            readActionBar.setTranslationY(-(1-slideOffset) * readActionBarSize);
+            readActionBar.setTranslationY(-(1 - slideOffset) * readActionBarSize);
             readActionBar.setElevation(15 * slideOffset);
         }
 
@@ -308,7 +317,7 @@ public class ReadingActivity extends AppCompatActivity {
 
         @Override
         public void onDrawerClosed(@NonNull View drawerView) {
-            readActionBar.setTranslationY( - readActionBarSize);
+            readActionBar.setTranslationY(-readActionBarSize);
             readActionBar.setElevation(0);
         }
 
@@ -327,10 +336,10 @@ public class ReadingActivity extends AppCompatActivity {
         @Override
         public void onDrawerOpened(@NonNull View drawerView) {
             findViewById(R.id.einkDrawerCloser).setVisibility(View.VISIBLE);
-            if(findViewById(R.id.listChapters).getVisibility() == View.VISIBLE){
+            if (findViewById(R.id.listChapters).getVisibility() == View.VISIBLE) {
                 displayingEinkPage = findViewById(R.id.listChapters);
             }
-            if(findViewById(R.id.listBookmarks).getVisibility() == View.VISIBLE){
+            if (findViewById(R.id.listBookmarks).getVisibility() == View.VISIBLE) {
                 displayingEinkPage = findViewById(R.id.listBookmarks);
             }
             readActionBar.setTranslationY(0);
@@ -340,7 +349,7 @@ public class ReadingActivity extends AppCompatActivity {
         public void onDrawerClosed(@NonNull View drawerView) {
             findViewById(R.id.einkDrawerCloser).setVisibility(View.GONE);
             displayingEinkPage = null;
-            readActionBar.setTranslationY( - readActionBarSize);
+            readActionBar.setTranslationY(-readActionBarSize);
         }
 
         @Override
@@ -350,24 +359,21 @@ public class ReadingActivity extends AppCompatActivity {
     };
 
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_read,menu);
-        ColorStateList color =(ColorStateList.valueOf(Color.WHITE));
-        MenuItemCompat.setIconTintList(menu.findItem(R.id.mnuTempBookmark),color);
+        getMenuInflater().inflate(R.menu.menu_read, menu);
+        ColorStateList color = (ColorStateList.valueOf(Color.WHITE));
+        MenuItemCompat.setIconTintList(menu.findItem(R.id.mnuTempBookmark), color);
         return super.onCreateOptionsMenu(menu);
     }
 
     private EinkRecyclerView displayingEinkPage = null;
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if(keyCode==KeyEvent.KEYCODE_VOLUME_UP || keyCode==KeyEvent.KEYCODE_VOLUME_DOWN) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
 
             if (event.getRepeatCount() > 0) {
                 return true;
@@ -403,12 +409,11 @@ public class ReadingActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(ViewUtils.sourceIsGamepad(event.getSource())){
-            if(event.getAction() == KeyEvent.ACTION_UP){
-                return processKeyDown(event.getKeyCode(),event);
+        if (ViewUtils.sourceIsGamepad(event.getSource())) {
+            if (event.getAction() == KeyEvent.ACTION_UP) {
+                return processKeyDown(event.getKeyCode(), event);
             }
         }
 
@@ -419,21 +424,20 @@ public class ReadingActivity extends AppCompatActivity {
 
     public boolean processKeyDown(int keyCode, KeyEvent event) {
 
-        if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_BUTTON_START){
-            if(!isDrawerOpen()){
+        if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_BUTTON_START) {
+            if (!isDrawerOpen()) {
                 openDrawer();
-            }
-            else{
+            } else {
                 closeDrawer();
             }
 
             return true;
         }
 
-        if((keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_BUTTON_R1) && isDrawerOpen()){
+        if ((keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_BUTTON_R1) && isDrawerOpen()) {
             int selectedTabPosition = drawerTab.getSelectedTabPosition();
             selectedTabPosition++;
-            if(selectedTabPosition >= drawerTab.getTabCount()){
+            if (selectedTabPosition >= drawerTab.getTabCount()) {
                 selectedTabPosition = 0;
             }
             drawerTab.getTabAt(selectedTabPosition).select();
@@ -441,28 +445,26 @@ public class ReadingActivity extends AppCompatActivity {
         }
 
 
-
-        if(keyCode == KeyEvent.KEYCODE_BUTTON_Y){
+        if (keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
             openOptionsMenu();
 
             return true;
         }
 
-        if(!isDrawerOpen()){
-            Log.d(TAG, "processKeyDown: "+keyCode);
-            if(keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_BUTTON_X){
+        if (!isDrawerOpen()) {
+            Log.d(TAG, "processKeyDown: " + keyCode);
+            if (keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
                 evaluteJavascriptFunction("prev");
                 return true;
             }
-            if(keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_BUTTON_A){
+            if (keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_BUTTON_A) {
                 evaluteJavascriptFunction("next");
                 return true;
             }
         }
 
 
-
-        if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_BUTTON_B){
+        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_BUTTON_B) {
             onBackPressed();
             return true;
         }
@@ -558,17 +560,17 @@ public class ReadingActivity extends AppCompatActivity {
 
     private String tempBookmark = null;
 
-    public void setFontSize(int fontSize){
-        Log.w(TAG, "setTextSize: "+fontSize);
+    public void setFontSize(int fontSize) {
+        Log.w(TAG, "setTextSize: " + fontSize);
         SpUtils.getInstance(this).setTextSize(fontSize);
         final String cfi = currentProgressCfi;
-        evaluteJavascriptFunction("setTextSize",fontSize);
+        evaluteJavascriptFunction("setTextSize", fontSize);
         hWnd.postDelayed(new Runnable() {
             @Override
             public void run() {
                 navTo(cfi);
             }
-        },500);
+        }, 500);
     }
 
     private int loadingFlag = -1;
@@ -576,9 +578,11 @@ public class ReadingActivity extends AppCompatActivity {
     private Runnable loadingLazyShower = new Runnable() {
         @Override
         public void run() {
-            if(loadingFlag>0){loadingFlag--;}
+            if (loadingFlag > 0) {
+                loadingFlag--;
+            }
             findViewById(R.id.pbrLoading).setVisibility(loadingFlag == 0 ? View.VISIBLE : View.INVISIBLE);
-            hWnd.postDelayed(this,50);
+            hWnd.postDelayed(this, 50);
         }
     };
 
@@ -626,14 +630,19 @@ public class ReadingActivity extends AppCompatActivity {
         ws.setLoadWithOverviewMode(true);
         ws.setDefaultFontSize(SpUtils.getInstance(this).getTextSize());
         bookView.setWebContentsDebuggingEnabled(true);
-        if(SpUtils.getInstance(this).getShouldClearCache()){
-            try{
+        if (SpUtils.getInstance(this).getShouldClearCache()) {
+            try {
                 bookView.clearCache(true);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
             SpUtils.getInstance(this).setShouldClearCache(false);
         }
+
+        if (TextUtils.isEmpty(SpUtils.getInstance(this).getCustomFont())) {
+            dummyCSSContent = "";
+        }
+
         initHtmlCallback();
         bookView.setWebViewClient(new WebViewClient() {
             @Override
@@ -661,12 +670,23 @@ public class ReadingActivity extends AppCompatActivity {
             @Nullable
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                return this.shouldInterceptRequest(view, url);
+            }
 
+            @Nullable
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 try {
-
-                    String url = request.getUrl().toString();
                     Log.e("url", url);
                     try {
+                        if (url.startsWith(dummyScriptUrl)) {
+                            return new WebResourceResponse("text/javascript", "UTF-8", 200, "OK", null, new ByteArrayInputStream(new byte[0]));
+                        }
+                        if (url.startsWith(dummyCSSUrl)) {
+                            return new WebResourceResponse("text/javascript", "UTF-8", 200, "OK", null, new ByteArrayInputStream(dummyCSSContent.getBytes(StandardCharsets.UTF_8)));
+                        }
+
                         if (url.startsWith(internalUrlStatic)) {
                             String path = url.substring(internalUrlStatic.length());
                             return processStaticResource(path);
@@ -675,6 +695,7 @@ public class ReadingActivity extends AppCompatActivity {
                             String path = url.substring(internalUrlBook.length());
                             return processBookResource(path);
                         }
+
                     } catch (Exception ex) {
                     }
                     if (url.endsWith(".ttf")) {
@@ -683,15 +704,14 @@ public class ReadingActivity extends AppCompatActivity {
                         resp.put("Access-Control-Allow-Origin", "*");
                         resp.put("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
                         resp.put("Access-Control-Max-Age", "3600");
-                        resp.put("Cache-Control","max-age=114514");
+                        resp.put("Cache-Control", "max-age=114514");
                         resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
                         resp.put("Access-Control-Allow-Credentials", "true");
                         InputStream fontInputStream = null;
                         String customFont = SpUtils.getInstance(ReadingActivity.this).getCustomFont();
-                        if(TextUtils.isEmpty(customFont)){
+                        if (TextUtils.isEmpty(customFont)) {
                             fontInputStream = assetManager.open("roboto.ttf");
-                        }
-                        else{
+                        } else {
                             fontInputStream = getCustomFontStream(customFont);
                         }
 
@@ -700,20 +720,7 @@ public class ReadingActivity extends AppCompatActivity {
                         return wr;
                     }
 
-                    if(url.endsWith("custfont.css")){
-                        String customFont = SpUtils.getInstance(ReadingActivity.this).getCustomFont();
-                        if(TextUtils.isEmpty(customFont)){
-                            HashMap<String, String> resp = new HashMap<String, String>();
-                            resp.put("Access-Control-Allow-Origin", "*");
-                            resp.put("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
-                            resp.put("Access-Control-Max-Age", "3600");
-                            resp.put("Cache-Control","max-age=114514");
-                            resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
-                            resp.put("Access-Control-Allow-Credentials", "true");
-                            WebResourceResponse wr = new WebResourceResponse("text/css", "UTF-8", 200, "OK", resp, new ByteArrayInputStream("* {}".getBytes()));
-                            return wr;
-                        }
-                    }
+
                 } catch (Exception ex) {
                 }
 
@@ -721,33 +728,13 @@ public class ReadingActivity extends AppCompatActivity {
                 resp.put("Access-Control-Allow-Origin", "*");
                 resp.put("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
                 resp.put("Access-Control-Max-Age", "3600");
-                resp.put("Cache-Control","max-age=114514");
+                resp.put("Cache-Control", "max-age=114514");
                 resp.put("Access-Control-Allow-Headers", "x-requested-with,Authorization");
                 resp.put("Access-Control-Allow-Credentials", "true");
 
                 WebResourceResponse wr = new WebResourceResponse("text/html", "UTF-8", 200, "OK", resp, new ByteArrayInputStream("404 not found".getBytes()));
 
                 return wr;
-            }
-
-            @Nullable
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                try {
-                    if (url.startsWith(internalUrlStatic)) {
-                        String path = url.substring(internalUrlStatic.length());
-                        return processStaticResource(path);
-                    }
-                    if (url.startsWith(internalUrlBook)) {
-                        String path = url.substring(internalUrlBook.length());
-                        return processBookResource(path);
-                    }
-                    if(url.startsWith(dummyScriptUrl)){
-                        return new WebResourceResponse("text/javascript", "UTF-8", 200, "OK", null, new ByteArrayInputStream(new byte[0]));
-                    }
-                } catch (Exception ex) {
-                }
-                return new WebResourceResponse("text/html", "UTF-8", 404, "Not found", null, null);
             }
 
             public WebResourceResponse processStaticResource(String path) throws IOException {
@@ -761,7 +748,7 @@ public class ReadingActivity extends AppCompatActivity {
                 MimeTypeMap mmp = MimeTypeMap.getSingleton();
                 try {
                     String anotherName = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
-                    if(new File(bookRootPath,anotherName).exists()){
+                    if (new File(bookRootPath, anotherName).exists()) {
                         path = anotherName;
                     }
                 } catch (UnsupportedEncodingException e) {
@@ -806,7 +793,7 @@ public class ReadingActivity extends AppCompatActivity {
         bookView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(ViewUtils.sourceIsGamepad(event.getSource())){
+                if (ViewUtils.sourceIsGamepad(event.getSource())) {
                     return true;
                 }
                 return false;
@@ -816,7 +803,7 @@ public class ReadingActivity extends AppCompatActivity {
         bookView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
             @Override
             public boolean onGenericMotion(View v, MotionEvent event) {
-                if(ViewUtils.sourceIsGamepad(event.getSource())){
+                if (ViewUtils.sourceIsGamepad(event.getSource())) {
 
                     return true;
                 }
@@ -828,7 +815,7 @@ public class ReadingActivity extends AppCompatActivity {
     }
 
     private InputStream getCustomFontStream(String customFont) throws IOException {
-        if(cachedFont!=null && cachedFont.length > 0){
+        if (cachedFont != null && cachedFont.length > 0) {
             return new ByteArrayInputStream(cachedFont);
         }
         ByteArrayOutputStream byteArrayOutputStream;
@@ -850,10 +837,9 @@ public class ReadingActivity extends AppCompatActivity {
     HashMap<String, TocEntry> tocHashMap = new HashMap<>();
     HashMap<String, Action<String>> htmlCallbacks = new HashMap<>();
 
-    private String currentProgressCfi="";
+    private String currentProgressCfi = "";
 
     ArrayList<TocEntry> tocList = new ArrayList<>();
-
 
 
     public void initHtmlCallback() {
@@ -867,12 +853,12 @@ public class ReadingActivity extends AppCompatActivity {
         htmlCallbacks.put("EPUB_BOOK_INIT_START", new Action<String>() {
             @Override
             public void run(String arg) {
-                if(getString(R.string.isnightmode).contains("yes")){
+                if (getString(R.string.isnightmode).contains("yes")) {
 
-                        evaluteJavascriptFunction("setNight()");
+                    evaluteJavascriptFunction("setNight()");
 
                 }
-                evaluteJavascriptFunction("loadBookAtUrl", contentOpfPath, DBUtils.autoLoad(ReadingActivity.this,readingBook.getUUID()).getEpubcft(),SpUtils.getInstance(ReadingActivity.this).getTextSize());
+                evaluteJavascriptFunction("loadBookAtUrl", contentOpfPath, DBUtils.autoLoad(ReadingActivity.this, readingBook.getUUID()).getEpubcft(), SpUtils.getInstance(ReadingActivity.this).getTextSize());
             }
         });
         htmlCallbacks.put("EPUB_BOOK_INIT_SUCCESS", new Action<String>() {
@@ -895,7 +881,9 @@ public class ReadingActivity extends AppCompatActivity {
             int stack = 0;
 
             void enumrateToc(TocEntry[] root) {
-                if(root==null){return;}
+                if (root == null) {
+                    return;
+                }
                 for (TocEntry toc : root) {
                     tocList.add((TocEntry) toc.clone());
                     String tabs = "";
@@ -903,11 +891,11 @@ public class ReadingActivity extends AppCompatActivity {
                         tabs += "    ";
                     }
                     String str = "";
-                    try{
+                    try {
                         tocList.get(tocList.size() - 1).label = tabs + tocList.get(tocList.size() - 1).label.trim();
                         tocHashMap.put(toc.href, toc);
-                    }catch (NullPointerException npe){
-                        Log.e("Unknown toc","",npe);
+                    } catch (NullPointerException npe) {
+                        Log.e("Unknown toc", "", npe);
                     }
                     stack++;
                     enumrateToc(toc.subitems);
@@ -955,10 +943,11 @@ public class ReadingActivity extends AppCompatActivity {
 
         htmlCallbacks.put("CENTER_CLICKED", new Action<String>() {
             long lastTime = -1;
+
             @Override
             public void run(String arg) {
-                if(System.currentTimeMillis() - lastTime < 800){
-                    ((DrawerLayout)findViewById(R.id.drwMain)).openDrawer(GravityCompat.START);
+                if (System.currentTimeMillis() - lastTime < 800) {
+                    ((DrawerLayout) findViewById(R.id.drwMain)).openDrawer(GravityCompat.START);
                 }
                 lastTime = System.currentTimeMillis();
             }
@@ -967,13 +956,14 @@ public class ReadingActivity extends AppCompatActivity {
         htmlCallbacks.put("SWIPE", new Action<String>() {
             @Override
             public void run(String arg) {
-               // Nothing to do here. The page switch is handled in index.html
+                // Nothing to do here. The page switch is handled in index.html
             }
         });
     }
+
     void displayPageInfo() {
         getSupportActionBar().setSubtitle("[" + currentPage + "] " + currentChapter);
-        ((TextView)findViewById(R.id.txtChapterInfo2)).setText(currentPage + " " + currentChapter);
+        ((TextView) findViewById(R.id.txtChapterInfo2)).setText(currentPage + " " + currentChapter);
     }
 
     public void evaluteJavascriptFunction(String functionName, Object... arguments) {
@@ -997,7 +987,6 @@ public class ReadingActivity extends AppCompatActivity {
         scriptBuilder.append(");");
         bookView.evaluateJavascript(scriptBuilder.toString(), null);
     }
-
 
 
     class TocAdapter extends RecyclerView.Adapter<TocAdapter.TocHolder> {
@@ -1046,11 +1035,11 @@ public class ReadingActivity extends AppCompatActivity {
         List<DBUtils.BookMark> bookmarls;
 
         public BookmarkAdapter() {
-            bookmarls = DBUtils.queryBookmarks(ReadingActivity.this,readingBook.getUUID());
+            bookmarls = DBUtils.queryBookmarks(ReadingActivity.this, readingBook.getUUID());
         }
 
         public void update() {
-            bookmarls = DBUtils.queryBookmarks(ReadingActivity.this,readingBook.getUUID());
+            bookmarls = DBUtils.queryBookmarks(ReadingActivity.this, readingBook.getUUID());
             notifyDataSetChanged();
         }
 
@@ -1071,11 +1060,12 @@ public class ReadingActivity extends AppCompatActivity {
                 bh.txtTime.setVisibility(View.INVISIBLE);
             } else {
                 bh.txtTime.setVisibility(View.VISIBLE);
-                if(bm.getSlot()==0){
-                    bh.txtTime.setText(getString(R.string.save_auto)+sdf.format(new Date(bm.getSaveTime())));}else
-                if(bm.getSlot()==1){
-                    bh.txtTime.setText(getString(R.string.save_quick)+sdf.format(new Date(bm.getSaveTime())));}else
-                bh.txtTime.setText(String.format(getString(R.string.save_normal), bm.getSlot() - 1, sdf.format(new Date(bm.getSaveTime()))));
+                if (bm.getSlot() == 0) {
+                    bh.txtTime.setText(getString(R.string.save_auto) + sdf.format(new Date(bm.getSaveTime())));
+                } else if (bm.getSlot() == 1) {
+                    bh.txtTime.setText(getString(R.string.save_quick) + sdf.format(new Date(bm.getSaveTime())));
+                } else
+                    bh.txtTime.setText(String.format(getString(R.string.save_normal), bm.getSlot() - 1, sdf.format(new Date(bm.getSaveTime()))));
             }
             bh.txtTitle.setText(bm.getName());
             bh.btnSave.setTag(bm);
@@ -1134,6 +1124,7 @@ public class ReadingActivity extends AppCompatActivity {
         DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
         drwMain.closeDrawer(Gravity.START);
     }
+
     @SuppressLint("WrongConstant")
     private void openDrawer() {
         DrawerLayout drwMain = (DrawerLayout) findViewById(R.id.drwMain);
@@ -1150,8 +1141,8 @@ public class ReadingActivity extends AppCompatActivity {
         Snackbar.make(findViewById(R.id.readingRootView), str, 1500).show();
     }
 
-    public void navTo(String cfi){
-        if(!cfi.isEmpty()){
+    public void navTo(String cfi) {
+        if (!cfi.isEmpty()) {
             evaluteJavascriptFunction("navTo", cfi);
         }
     }
@@ -1172,7 +1163,9 @@ public class ReadingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bookView.onResume();
-        if(null!=bookmarkAdapter){bookmarkAdapter.update();}
+        if (null != bookmarkAdapter) {
+            bookmarkAdapter.update();
+        }
     }
 
     @Override

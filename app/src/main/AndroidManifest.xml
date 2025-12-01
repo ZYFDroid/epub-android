@@ -3,6 +3,11 @@
 >
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <queries>
+        <package android:name="com.xteink.xtplushpaper"/>
+    </queries>
+
     <application
         android:name=".Program"
         android:allowBackup="true"
@@ -14,17 +19,9 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<!--        <service-->
-<!--            android:name=".server.ServerService"-->
-<!--            android:enabled="true"-->
-<!--            android:label="@string/server"-->
-<!--            android:exported="true" />-->
 
-<!--        <activity android:name=".server.ServerActivity"-->
-<!--            android:label="@string/server"-->
-<!--            android:launchMode="singleTask"-->
-<!--            android:screenOrientation="portrait"-->
-<!--            android:theme="@style/AppTheme.DefaultActionBar"/>-->
+
+
         <activity
             android:name=".AboutActivity"
             android:label="@string/about"

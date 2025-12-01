@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Projects.epub-android.iml" filepath="$PROJECT_DIR$/.idea/modules/Projects.epub-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Projects.epub-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Projects.epub-android.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Projects.epub-android.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Projects.epub-android.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Projects.epub-android.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Projects.epub-android.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/epub-android.iml" filepath="$PROJECT_DIR$/.idea/modules/epub-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/epub-android.app~1.iml" filepath="$PROJECT_DIR$/.idea/modules/app/epub-android.app~1.iml" />
     </modules>
   </component>
 </project>
